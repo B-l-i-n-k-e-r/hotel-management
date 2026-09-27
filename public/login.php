@@ -1,109 +1,103 @@
 <?php
-include("./config.php");
+require_once(__DIR__ . "/config.php");
 
-// Check if user is already logged in
-
+// If already logged in, redirect home
 if (isLoggedIn()) {
     header("Location: index.php");
-    return;
+    exit;
 }
 ?>
+<?php include(__DIR__ . "/includes/header.php"); ?>
+<body class="has-nav">
+  <section id="auth-form">
+    <div class="auth--wrapper">
+      <?php include(__DIR__ . "/includes/navbar.php"); ?>
 
-<?php include("./includes/header.php"); ?>
-  <body>
-    <!-- Form Section -->
-    <section id="auth-form">
-      <div class="auth--wrapper">
-        <?php include("./includes/navbar.php"); ?>
+      <div class="bg-image">
+        <span>Enjoy personalized recommendations, discounts and much more</span>
+      </div>
 
-        <div class="bg-image">
-          <span>
-            Enjoy personalized recommendations, discounts and much more
-          </span>
-        </div>
-        <div class="form-wrapper">
-          <div class="form-card">
-            <h2>Log in to your account</h2>
-            <div class="d-none">
-              Icons made by
-              <a href="https://www.flaticon.com/authors/freepik" title="Freepik"
-                >Freepik</a
-              >
-              from
-              <a href="https://www.flaticon.com/" title="Flaticon">
-                www.flaticon.com</a
-              >
-            </div>
+      <div class="form-wrapper">
+        <div class="form-card">
+          <h2>Log in to your account</h2>
 
-            <div class="group">
-              <img src="./media/logo/google.svg" alt="google logo" />
-              <button href="" class="btn">Sign in with google</button>
-            </div>
-
-            <h5><span class="small">or sign in with email</span></h5>
-            <form action="" id="login_user" method="post" class="form">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                  type="text"
-                  name="user_email"
-                  id="user_email"
-                  placeholder="Enter your email"
-                  class="form-control"
-                />
-                <small id="user_email_error" class="error-message text-danger">
-                  
-              </small>
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                  type="password"
-                  name="user_password"
-                  id="user_password"
-                  placeholder="Enter your password"
-                  class="form-control"
-                />
-                <small id="user_password_error" class="error-message text-danger">
-              </small>
-              </div>
-              <div class="form-group">
-                <button type="submit" id="login-user-btn" name="login-user" class="btn">
-                  Log in
-                </button>
-              </div>
-
-              <div class="alternate-auth">
-                <span>
-                  Don't have an account?
-                  <a href="./signup.php">&nbsp;Sign up instead</a>
-                </span>
-              </div>
-            </form>
+          <div class="group">
+            <img src="./media/logo/google.svg" alt="Google" />
+            <button type="button" class="btn">Sign in with Google</button>
           </div>
+
+          <h5><span class="small">or sign in with email</span></h5>
+
+          <form action="" id="login_user" method="post" class="form" novalidate>
+            <div id="login-error" class="form-error" hidden></div>
+
+            <div class="form-group">
+              <label for="user_email">Email</label>
+              <input
+                type="email"
+                name="user_email"
+                id="user_email"
+                placeholder="Enter your email"
+                class="form-control"
+                autocomplete="email"
+                required
+              />
+              <small id="user_email_error" class="error-message text-danger"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="user_password">Password</label>
+              <input
+                type="password"
+                name="user_password"
+                id="user_password"
+                placeholder="Enter your password"
+                class="form-control"
+                autocomplete="current-password"
+                required
+              />
+              <small id="user_password_error" class="error-message text-danger"></small>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" id="login-user-btn" name="login-user" class="btn">
+                Log in
+              </button>
+            </div>
+
+            <div class="alternate-auth">
+              <span>Don't have an account? <a href="<?= SROOT ?>/signup.php">Sign up instead</a></span>
+            </div>
+          </form>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
+<?php include(__DIR__ . "/includes/footer.php"); ?>
 
-<?php include("./includes/footer.php"); ?>
-    <!-- Custom -->
-  <script>
-    $(document).ready(function () {
-    $("nav").addClass("navbar-light");
-
-    function handleError(about, message) {
-      $(`#${about}`).addClass("is-invalid");
-      $(`#${about}_error`).html("<span>"+message+"</span>");
-    }
-
-    // Login user
-    $("#login_user").submit(function (e) {
+<script>
+  $(document).ready(function () {
+    function clearErrors() {
       $(".error-message").html("");
       $(".form-control").removeClass("is-invalid");
-      $("#login-user-btn").html("Loggin you in...");
+      $("#login-error").attr("hidden", true).text("");
+    }
 
+    function handleError(about, message) {
+      if (about) {
+        $("#" + about).addClass("is-invalid");
+        $("#" + about + "_error").html(message);
+      } else {
+        $("#login-error").text(message || "Something went wrong.").removeAttr("hidden");
+      }
+    }
+
+    $("#login_user").submit(function (e) {
       e.preventDefault();
+      clearErrors();
+
+      var $btn = $("#login-user-btn").prop("disabled", true).text("Logging you in…");
       var formData = new FormData(this);
 
       $.ajax({
@@ -114,15 +108,15 @@ if (isLoggedIn()) {
         success: function (data) {
           if (data.error == 1) {
             handleError(data.about, data.message);
-            $("#login-user-btn").html("Log in");
+            $btn.prop("disabled", false).text("Log in");
           } else {
-            window.location.href="verify_user.php";
-            return;
+            // Success — redirect to home (or to wherever the login flow expects)
+            window.location.href = "<?= SROOT ?>/index.php";
           }
         },
-        error: function (data, message, errorThrown) {
-          // $("#error-form").html("<span class=\"p-2\">" + message + errorThrown + "</span>");
-          $("#login-user-btn").html("Log in");
+        error: function (xhr, status, errorThrown) {
+          $("#login-error").text("Network error: " + errorThrown).removeAttr("hidden");
+          $btn.prop("disabled", false).text("Log in");
         },
         cache: false,
         contentType: false,
@@ -130,7 +124,6 @@ if (isLoggedIn()) {
       });
     });
   });
-  </script>
-
+</script>
 </body>
 </html>

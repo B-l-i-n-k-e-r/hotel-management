@@ -151,3 +151,9 @@ function isAdmin($pdo)
     
     return false;
 }
+function getRoomNameFromId($room_id, $pdo) {
+    $stmt = $pdo->prepare("SELECT room_name FROM rooms WHERE room_id = ?");
+    $stmt->execute([$room_id]);
+    $name = $stmt->fetchColumn();
+    return $name ?: null;
+}

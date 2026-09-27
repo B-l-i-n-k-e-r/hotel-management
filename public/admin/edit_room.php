@@ -1,177 +1,207 @@
 <?php
-  require("../config.php");
-  include("./includes/header.php");
+require_once(__DIR__ . "/../config.php");
+
+if (!isset($_GET["room_id"]) || $_GET["room_id"] === "") {
+    $_SESSION["error"] = "Room id cannot be empty";
+    header("Location: rooms.php");
+    exit;
+}
+
+$id  = (int)$_GET["room_id"];
+$row = getRoomFromId($pdo, $id);
+
+if (!$row) {
+    $_SESSION["error"] = "Room not found";
+    header("Location: rooms.php");
+    exit;
+}
+
+$admin_page  = "rooms";
+$admin_title = "Edit room";
+$admin_sub   = "Room " . $row["room_number"] . " — " . $row["room_name"];
+
+include(__DIR__ . "/includes/header.php");
+
+if (!isLoggedIn() || !isAdmin($pdo)) {
+    header("Location: ../login.php");
+    exit;
+}
+
+$isFeatured = ((int)$row["room_featured"] === 1);
 ?>
-<section class="content admin-form">
-  <h2 class="mb-3 mt-10 text-center">Add Room</h2>
-  <div class="container">
 
-    <!-- Start of form -->
-    <form action="" id="edit_room_form" method="post" enctype="multipart/form-data" >
-      <div class="text-info">
-      <?php
-        if (isset($_SESSION["message"])) {
-            echo $_SESSION["message"];
-            unset($_SESSION["message"]);
-        }
+<div class="admin-topbar-actions">
+  <a href="rooms.php" class="btn-ghost-pill btn-ghost-light">
+    <i class="fa fa-arrow-left"></i>&nbsp; Back to rooms
+  </a>
+</div>
 
-        if (isset($_GET["room_id"])) {
-            if (is_null($_GET["room_id"]) || $_GET["room_id"] == "") {
-                $_SESSION["error"] = "Room id cannot be empty";
-                header("Location: rooms.php");
-                return;
-            }
-        } else {
-            $_SESSION["error"] = "Invalid room id";
-            header("Location: rooms.php");
-            return;
-        }
-  
-        $id = $_GET["room_id"];
-              
-        $row = getRoomFromId($pdo, $id);
-  
-      ?>
-      </div>
-      <div class="row">
-        <div class="col-sm-12 col-md-6 col-6">
-        <input type="hidden" name="room_id" value="<?= $id ?>" />
-          <div class="form-group">
-            <label class="form-label " for="room_number">Room Number</label>
-            <input type="number" name="room_number" id="room_number" class="form-control" value="<?= $row["room_number"]; ?>" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_name">Room Name</label>
-            <input type="text" name="room_name" id="room_name" class="form-control" value="<?= $row["room_name"]; ?>"   required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_type">Room Type</label>
-            <input type="text" name="room_type" id="room_type" class="form-control " value="<?= $row["room_type"]; ?>"  required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_floor">Room Floor</label>
-            <input type="number" name="room_floor" id="room_floor" class="form-control" value="<?= $row["room_floor"]; ?>"  required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_type">Room View</label>
-            <input type="text" name="room_view" id="room_view" class="form-control" value="<?= $row["room_view"]; ?>"  required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_capacity">Room Amenities</label>
-            <input type="text" name="amenities" id="room_amenities" class="form-control" value="<?= $row["room_amenities"]; ?>"  required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_beds">Number of Beds</label>
-            <input type="number" name="room_beds" id="room_beds" class="form-control" value="<?= $row["room_beds"]; ?>"  required />
-          </div>
-        </div>
-        <div class="col-sm-12 col-md-6 col-6">
-          <div class="form-group">
-            <label class="form-label" for="bed_type">Bed Type</label>
-            <input type="text" name="bed_type" id="bed_type" class="form-control" value="<?= $row["bed_type"]; ?>"  required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_capacity">Room Capacity</label>
-            <input type="number" name="room_capacity" id="room_capacity" class="form-control" value="<?= $row["room_capacity"]; ?>"  required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_price">Room Price</label>
-            <input type="number" name=" room_price" id="room_price" class="form-control " value="<?= $row["room_price"]; ?>" required />
-            <small id="room_price_error" class="text-danger">
-            </small>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="room_featured">Is the Room featured ?</label><br>
-            <input type="radio" class="" id="featured_yes" name="room_featured" value="yes" <?= $row["room_featured"] ? "checked" : "" ?>><span>&nbsp;</span>
-            <lable for="featured_no">Yes</lable>
-            <span>&nbsp;&nbsp;</span>
-            <input type="radio" class=" " id="featured_no" name="room_featured" value="no" <?= $row["room_featured"] ? "" : "checked" ?>><span>&nbsp;</span>
-            <lable for="featured_no" >No</lable>
-            <br>
-          </div>
-          <div class="row">
-            <div class="col-6">
-            <div class="form-group">
-            <input type="file" name="new_room_image" id="new_room_image" accept="image/png, image/jpeg"/>
-            <small id="new_room_image_error" class="error-message text-danger">
-            </small>
-          </div>
-            </div>
-            <div class="col-6">
-            <div class="form-group">
-            <img id="form-image" src="<?= IMAGEROOT.$row["room_image"] ?>" alt="<?= $row["room_image"] ?>">
-            <input type="hidden" name="room_image" id="room_image" value="<?= $row["room_image"]; ?>" />
-          </div>
-
-            </div>
-          </div>
-          <!-- <div class="form-group">
-            <label class="form-label is-invalid" for="room_image">Room Image</label><br>
-            <input type="file" name="room_image" accept="image/png, image/jpeg" class="" />
-            <small id="room_image_error" class="error-message text-danger">
-            </small>
-          </div> -->
-          <div class="text-danger" id="error-form">
-          </div>
-          <div class="form-group my-0.25">
-            <button id="edit_room" type="submit" name="edit_room" value="edit_room" class="btn btn-primary">Edit Room</button>
-          </div>
-        </div>
-      </div>
-    </form>
-    <!-- End of form -->
+<?php if (isset($_SESSION["message"])): ?>
+  <div class="admin-flash admin-flash-success">
+    <?= htmlspecialchars($_SESSION["message"]) ?>
   </div>
+  <?php unset($_SESSION["message"]); ?>
+<?php endif; ?>
+
+<section class="admin-form-card">
+  <form action="" id="edit_room_form" method="post" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="room_id" value="<?= (int)$id ?>" />
+    <div id="error-form" class="form-error" hidden></div>
+
+    <div class="form-grid">
+      <div class="form-col">
+        <div class="form-group">
+          <label class="form-label" for="room_number">Room number</label>
+          <input type="number" name="room_number" id="room_number" class="form-control" value="<?= htmlspecialchars($row["room_number"]) ?>" required />
+          <small id="room_number_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_name">Room name</label>
+          <input type="text" name="room_name" id="room_name" class="form-control" value="<?= htmlspecialchars($row["room_name"]) ?>" required />
+          <small id="room_name_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_type">Room type</label>
+          <input type="text" name="room_type" id="room_type" class="form-control" value="<?= htmlspecialchars($row["room_type"]) ?>" required />
+          <small id="room_type_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_floor">Floor</label>
+          <input type="number" name="room_floor" id="room_floor" class="form-control" value="<?= htmlspecialchars($row["room_floor"]) ?>" required />
+          <small id="room_floor_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_view">View</label>
+          <input type="text" name="room_view" id="room_view" class="form-control" value="<?= htmlspecialchars($row["room_view"]) ?>" required />
+          <small id="room_view_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_amenities">Amenities</label>
+          <input type="text" name="amenities" id="room_amenities" class="form-control" value="<?= htmlspecialchars($row["room_amenities"]) ?>" required />
+          <small id="amenities_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_beds">Number of beds</label>
+          <input type="number" name="room_beds" id="room_beds" class="form-control" value="<?= htmlspecialchars($row["room_beds"]) ?>" required />
+          <small id="room_beds_error" class="field-error"></small>
+        </div>
+      </div>
+
+      <div class="form-col">
+        <div class="form-group">
+          <label class="form-label" for="bed_type">Bed type</label>
+          <input type="text" name="bed_type" id="bed_type" class="form-control" value="<?= htmlspecialchars($row["bed_type"]) ?>" required />
+          <small id="bed_type_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_capacity">Capacity</label>
+          <input type="number" name="room_capacity" id="room_capacity" class="form-control" value="<?= htmlspecialchars($row["room_capacity"]) ?>" required />
+          <small id="room_capacity_error" class="field-error"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="room_price">Price (per day)</label>
+          <input type="number" name="room_price" id="room_price" class="form-control" value="<?= htmlspecialchars($row["room_price"]) ?>" required />
+          <small id="room_price_error" class="field-error"></small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Featured room</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="room_featured" value="1" <?= $isFeatured ? "checked" : "" ?> />
+              <span>Yes</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="room_featured" value="0" <?= $isFeatured ? "" : "checked" ?> />
+              <span>No</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new_room_image">Room image</label>
+          <div class="image-edit">
+            <div class="image-edit-preview">
+              <img src="<?= htmlspecialchars(IMAGEROOT . $row["room_image"]) ?>" alt="Current room image" id="current-image-preview" />
+            </div>
+            <div class="image-edit-controls">
+              <label class="file-drop file-drop-compact" for="new_room_image">
+                <i class="fa fa-cloud-upload"></i>
+                <span class="file-drop-text">Replace image</span>
+                <span class="file-drop-hint">PNG or JPG, up to 5MB</span>
+                <input type="file" name="new_room_image" id="new_room_image" accept="image/png, image/jpeg" hidden />
+              </label>
+              <input type="hidden" name="room_image" value="<?= htmlspecialchars($row["room_image"]) ?>" />
+            </div>
+          </div>
+          <small id="new_room_image_error" class="field-error"></small>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="delete_room.php?room_id=<?= (int)$id ?>" class="btn-danger">Delete room</a>
+      <div class="form-actions-right">
+        <a href="rooms.php" class="btn-ghost-pill btn-ghost-light">Cancel</a>
+        <button id="edit_room" type="submit" name="edit_room" value="edit_room" class="btn-primary-pill">
+          Save changes
+        </button>
+      </div>
+    </div>
+  </form>
 </section>
-     
-<?php include("./includes/footer.php"); ?>
+
+<?php include(__DIR__ . "/includes/footer.php"); ?>
+
 <script>
-    function handleError(about, message) {
-      $(`#${about}`).addClass("is-invalid");
-        $(`#${about}_error`).html(message);
+  $(document).ready(function () {
+    $("#new_room_image").on("change", function () {
+      var file = this.files && this.files[0];
+      if (!file) return;
+      $(".file-drop-text").text(file.name);
+      var reader = new FileReader();
+      reader.onload = function (e) { $("#current-image-preview").attr("src", e.target.result); };
+      reader.readAsDataURL(file);
+    });
+
+    function clearErrors() {
+      $(".field-error").text("");
+      $(".form-control").removeClass("is-invalid");
+      $("#error-form").attr("hidden", true).text("");
+    }
+    function showFieldError(field, message) {
+      $("#" + field).addClass("is-invalid");
+      $("#" + field + "_error").text(message);
     }
 
-  $(document).ready(function() {
+    $("#edit_room_form").submit(function (e) {
+      e.preventDefault();
+      clearErrors();
 
-    $("#edit_room_form").submit(function(e) {
-      $(".error-message").html("");
-      $("#error-form").html("");
-      $("#edit_room").removeClass("btn-primary");
-      $("#edit_room").removeClass("btn-danger");
-      $("#edit_room").addClass("btn-info");
-      $("#edit_room").html("Editing room...");
-      e.preventDefault();    
+      var $btn = $("#edit_room").prop("disabled", true).text("Saving…");
       var formData = new FormData(this);
 
       $.ajax({
-          url: "edit_room_controller.php",
-          type: "POST",
-          data: formData,
-          success: function (data) {
-            console.log(data);
-            if(data.error == 1) {
-              handleError(data.about, data.message);
-              // $("#edit_room").removeClass("btn-primary");
-              $("#edit_room").addClass("btn-danger");
-              $("#edit_room").html("Edit Room");
-            } else {
-              $("#edit_room").removeClass("btn-info");
-              $("#edit_room").addClass("btn-success");
-              $("#edit_room").html("Success");
-              window.location.href = 'rooms.php';
-            }
-          },
-          error: function (data, message, errorThrown) {
-            $("#error-form").html("<span class=\"p-2\">" + message  + errorThrown + "</span>");
-            $("#edit_room").addClass("btn-primary");
-            $("#edit_room").html("Edit Room");
-          }, 
-          cache: false,
-          contentType: false,
-          processData: false
+        url: "edit_room_controller.php",
+        type: "POST",
+        data: formData,
+        dataType: "json",
+        success: function (data) {
+          if (data.error == 1) {
+            if (data.about) showFieldError(data.about, data.message);
+            else $("#error-form").text(data.message || "Something went wrong.").removeAttr("hidden");
+            $btn.prop("disabled", false).text("Save changes");
+          } else {
+            $btn.text("Saved");
+            window.location.href = "rooms.php";
+          }
+        },
+        error: function (xhr, message, errorThrown) {
+          $("#error-form").text("Network error: " + errorThrown).removeAttr("hidden");
+          $btn.prop("disabled", false).text("Save changes");
+        },
+        cache: false, contentType: false, processData: false
       });
     });
   });
 </script>
-
-</body>
-</html>

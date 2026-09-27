@@ -1,249 +1,195 @@
 <?php
-require_once("./config.php");
-include("./includes/header.php");
+require_once(__DIR__ . "/config.php");
+include(__DIR__ . "/includes/header.php");
 ?>
-<body>
-    <style>
-    .site-section{
-        padding:4em 0;
-    }
-
-    p,ul{
-        color:grey;
-    }
-
-    li{
-        margin-left:20px;
-    }
-
-    h2{
-        font-family:Sofia;
-    }
-
-    h3{
-        font-family:Sofia;
-    }
-
-    .imgt{
-        color:red;
-    }
-
-    .circle-border{
-     border-radius: 50%;
-    }
-
-    a .fa-facebook-square.social-bordered, .fa-facebook-square.social-bordered{
-     border-color: #3b5999;
-     color: #3b5999;
-     background-color: rgba(59,89,153,0);
-     -webkit-transition: color .7s, background-color .7s;
-     transition: color .7s, background-color .7s;
-}
- a .fa-facebook-square.social-bordered:hover, .fa-facebook-square.social-bordered:hover{
-     color: #fff;
-     background-color: #3b5999;
-}
-
-a .fa-github.social-bordered, .fa-github.social-bordered{
-     border-color: #333;
-     color: #333;
-     background-color: rgba(59,89,153,0);
-     -webkit-transition: color .7s, background-color .7s;
-     transition: color .7s, background-color .7s;
-}
- a .fa-github.social-bordered:hover, .fa-github.social-bordered:hover{
-     color: #fff;
-     background-color: #333;
-}
-
-a .fa-linkedin.social-bordered, .fa-linkedin.social-bordered{
-     border-color: #4078c0;
-     color: #4078c0;
-     background-color: rgba(59,89,153,0);
-     -webkit-transition: color .7s, background-color .7s;
-     transition: color .7s, background-color .7s;
-}
- a .fa-linkedin.social-bordered:hover, .fa-linkedin.social-bordered:hover{
-     color: #fff;
-     background-color: #4078c0;
-}
-
-    </style>
-  <header id="home">
-      <?php include("./includes/navbar.php"); ?>
+<body class="has-nav has-hero">
+  <header class="page-header">
+    <?php include(__DIR__ . "/includes/navbar.php"); ?>
+    <div class="page-header-inner container">
+      <span class="eyebrow light">About us</span>
+      <h1>Where hospitality meets heritage</h1>
+      <p>Seven continents. One standard. A stay designed around you.</p>
+    </div>
   </header>
-  <div class="site-section bg-light">
-    <div class="container ">
-        <div class="row align-items-center">
-            <div class= "col-md-6 mb-5">
-                <p><img src="https://www.telegraph.co.uk/content/dam/Travel/hotels/2020/march/soneva-jani-water-retreat--bedroom-with-sea-view-pool-by-.jpg" width=450 height=350 alt="Resort View"></p>
-            </div>
-            <div class= "col-md-6 mb-5">
-                <div>
-                    <h2>About Us</h2>
-                    <hr>
-                </div> 
-                <p>
-                Offering top quality services that every customer deserves. We are an industry leader with our brand renowned across all of the seven continents. We aim to focus on:
-                </p>
-                <ul>
-                <li>Core Values and Heritage</li>
-                <li>Diversity and Inclusion</li>
-                <li>Sustainability and Social Impact</li>
-                </ul>
-                <p>
-                Our main goal is to provide the best experience to every customer and make their stay memorable. So become part of an ever growing family at V&N Hotel.
-                </p>
-            </div>
-        </div>
-    </div>
-  </div>
-  <div class="site-section">
-    <div class="container ">
-        <div class="row">
-            <div class="col-md-6 mx-auto text-center ">
-                <h2>Meet Our Team</h2>
-                <hr>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-lg-4 mb-5">
-                <div class="details text-center bg-light">
-                    <img src="./media/images/aboutus/alan.jpg" width="330" height="350" alt="Alan D'silva">
-                    <div class="p-5">
-                        <h3>Alan D'silva</h3>
-                        <p class="text-muted small mb-1"><strong>General Manager</strong></p>
-                        <p>
-                        Alan oversees daily operations at V&N Hotel with a passionate focus on luxury hospitality management. He ensures that room standards, guest accommodations, and front-desk workflows consistently align to deliver an exceptional, world-class lodging experience.
-                        </p>
-                        <div class="row">
-                        <div class="col">
-                        <a href="https://www.facebook.com/alan.dsilva.1253/"><i class="fa fa-facebook-square social-bordered circle-border"></i></a>
-                        </div>
-                        <div class="col">
-                        <a href="https://github.com/alandsilva26"><i class="fa fa-github social-bordered circle-border"></i></a>
-                        </div>
-                        <div class="col">
-                        <a href="https://www.linkedin.com/in/alan-dsilva-289b77170/"><i class="fa fa-linkedin social-bordered circle-border"></i></a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-5">
-                <div class="details text-center bg-light">
-                <img src="./media/images/aboutus/aaron1.jpg" width="330" height="350" alt="Aaron D'silva">
-                    <div class="p-5">
-                        <h3>Aaron D'silva</h3>
-                        <p class="text-muted small mb-1"><strong>Head of Guest Experiences</strong></p>
-                        <p>
-                        Aaron leads our hospitality programs, dedicated to curating memorable journeys for every visitor. From managing elite room amenities and fine dining choices to handling premium requests, he translates customer expectations into unforgettable stays.
-                        </p>
-                        <div class="row">
-                        <div class="col">
-                        <a href="https://facebook.com/dsilva.aaron.7"><i class="fa fa-facebook-square social-bordered circle-border"></i></a>
-                        </div>
-                        <div class="col">
-                        <a href="https://github.com/Aarondsilva0007"><i class="fa fa-github social-bordered circle-border"></i></a>
-                        </div>
-                        <div class="col">
-                        <a href="https://www.linkedin.com/in/aaron-d-silva-a05756200/"><i class="fa fa-linkedin social-bordered circle-border"></i></a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-5">
-                <div class="details text-center bg-light">
-                <img src="./media/images/aboutus/ansel.jpg" width="330" height="350" alt="Ansel D'souza">
-                    <div class="p-5">
-                        <h3>Ansel D'souza</h3>
-                        <p class="text-muted small mb-1"><strong>Technical Director</strong></p>
-                        <p>
-                        Ansel manages the digital ecosystem and brand infrastructure driving V&N Hotel forward. He oversees our automated reservation pipelines, portal security, and marketing analytics to ensure guest transactions and inquiries stay safe, stable, and seamless.
-                        </p>
-                        <div class="row">
-                        <div class="col">
-                        <a href="https://www.facebook.com/ansel.dsouza.71"><i class="fa fa-facebook-square social-bordered circle-border"></i></a>
-                        </div>
-                        <div class="col">
-                        <a href="https://github.com/ansel2000"><i class="fa fa-github social-bordered circle-border"></i></a>
-                        </div>
-                        <div class="col">
-                        <a href="https://www.linkedin.com/in/anselfdsouza/"><i class="fa fa-linkedin social-bordered circle-border"></i></a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-        </div>
-    </div>
-  </div>
-  <div class="site-section bg-light">
-    <div class="container ">
-    <div class="row">
-            <div class="col-md-6 mx-auto text-center ">
-                <h2>Hotel Features</h2>
-                <hr>
+  <main>
+
+    <!-- ============ About ============ -->
+    <section class="about-section">
+      <div class="container section-pad">
+        <div class="about-split">
+          <div class="about-media">
+            <img
+              src="./media/images/backgrounds/home-1.jpg"
+              alt="V&N Hotel suite with a view"
+              loading="lazy"
+            />
+          </div>
+          <div class="about-content">
+            <div class="section-title">
+              <span class="eyebrow">Our story</span>
+              <h2>About V&amp;N Hotel</h2>
             </div>
+            <p>
+              Offering top-quality service that every guest deserves. We are an industry leader with a
+              brand renowned across all seven continents. Our focus:
+            </p>
+            <ul class="value-list">
+              <li>Core values and heritage</li>
+              <li>Diversity and inclusion</li>
+              <li>Sustainability and social impact</li>
+            </ul>
+            <p>
+              Our goal is simple — make every stay memorable. Become part of the ever-growing
+              V&amp;N Hotel family.
+            </p>
+            <a href="<?= SROOT ?>/rooms.php" class="link-arrow">
+              Explore our rooms <i class="fa fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
-    <div class="row text-center">
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/pastel-glyph/64/FF0000/swimming-pool.png" alt="Pool"/>
+      </div>
+    </section>
+
+    <!-- ============ Team ============ -->
+    <section class="team-section section-alt">
+      <div class="container section-pad">
+        <div class="section-title centered">
+          <span class="eyebrow">The people</span>
+          <h2>Meet our team</h2>
+          <p class="section-sub">Hospitality is a craft. Here are the people who practise it every day.</p>
+        </div>
+
+        <div class="team-grid">
+          <!-- Alan -->
+          <article class="team-card">
+            <div class="team-photo">
+              <img src="./media/images/aboutus/alan.jpg" alt="Alan D'silva" loading="lazy" />
             </div>
-            <h5>Swimming Pool</h5>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/ios/64/FF0000/beach.png" alt="Beach"/>
+            <div class="team-body">
+              <h3>Alan D'silva</h3>
+              <p class="team-role">General Manager</p>
+              <p class="team-bio">
+                Alan oversees daily operations with a passion for luxury hospitality. He ensures room standards,
+                guest accommodations, and front-desk workflows align to deliver a world-class experience.
+              </p>
+              <div class="team-socials">
+                <a href="https://www.facebook.com/alan.dsilva.1253/" aria-label="Facebook" target="_blank" rel="noopener">
+                  <i class="fa fa-facebook-square"></i>
+                </a>
+                <a href="https://github.com/alandsilva26" aria-label="GitHub" target="_blank" rel="noopener">
+                  <i class="fa fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/alan-dsilva-289b77170/" aria-label="LinkedIn" target="_blank" rel="noopener">
+                  <i class="fa fa-linkedin"></i>
+                </a>
+              </div>
             </div>
-            <h5>Beach View</h5>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/ios-filled/64/FF0000/emergency-exit.png" alt="Exit"/>
+          </article>
+
+          <!-- Aaron -->
+          <article class="team-card">
+            <div class="team-photo">
+              <img src="./media/images/aboutus/aaron1.jpg" alt="Aaron D'silva" loading="lazy" />
             </div>
-            <h5>Fire Exit</h5>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/pastel-glyph/64/FF0000/parking--v1.png" alt="Parking"/>
+            <div class="team-body">
+              <h3>Aaron D'silva</h3>
+              <p class="team-role">Head of Guest Experiences</p>
+              <p class="team-bio">
+                Aaron leads our hospitality programs — curating memorable journeys for every visitor, from elite
+                amenities to fine dining, translating expectations into unforgettable stays.
+              </p>
+              <div class="team-socials">
+                <a href="https://facebook.com/dsilva.aaron.7" aria-label="Facebook" target="_blank" rel="noopener">
+                  <i class="fa fa-facebook-square"></i>
+                </a>
+                <a href="https://github.com/Aarondsilva0007" aria-label="GitHub" target="_blank" rel="noopener">
+                  <i class="fa fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/aaron-d-silva-a05756200/" aria-label="LinkedIn" target="_blank" rel="noopener">
+                  <i class="fa fa-linkedin"></i>
+                </a>
+              </div>
             </div>
-            <h5>Car Parking</h5>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/pastel-glyph/64/FF0000/hair-dryer--v1.png" alt="Dryer"/>
+          </article>
+
+          <!-- Ansel -->
+          <article class="team-card">
+            <div class="team-photo">
+              <img src="./media/images/aboutus/ansel.jpg" alt="Ansel D'souza" loading="lazy" />
             </div>
-            <h5>Hair Dryer</h5>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/ios-filled/64/FF0000/mini-bar.png" alt="Bar"/>
+            <div class="team-body">
+              <h3>Ansel D'souza</h3>
+              <p class="team-role">Technical Director</p>
+              <p class="team-bio">
+                Ansel manages our digital ecosystem — reservation pipelines, portal security, and marketing analytics —
+                keeping every guest transaction safe, stable, and seamless.
+              </p>
+              <div class="team-socials">
+                <a href="https://www.facebook.com/ansel.dsouza.71" aria-label="Facebook" target="_blank" rel="noopener">
+                  <i class="fa fa-facebook-square"></i>
+                </a>
+                <a href="https://github.com/ansel2000" aria-label="GitHub" target="_blank" rel="noopener">
+                  <i class="fa fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/anselfdsouza/" aria-label="LinkedIn" target="_blank" rel="noopener">
+                  <i class="fa fa-linkedin"></i>
+                </a>
+              </div>
             </div>
-            <h5>Mini Bar</h5>
+          </article>
         </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/ios/64/FF0000/cocktail.png" alt="Drinks"/>
-            </div>
-            <h5>Drinks</h5>
+      </div>
+    </section>
+
+    <!-- ============ Features ============ -->
+    <section class="features-section">
+      <div class="container section-pad">
+        <div class="section-title centered">
+          <span class="eyebrow">On property</span>
+          <h2>Hotel features</h2>
+          <p class="section-sub">Everything you need, right where you need it.</p>
         </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="imgt">
-            <img src="https://img.icons8.com/ios-filled/64/FF0000/car.png" alt="Airport shuttle"/>
-            </div>
-            <h5>Car Airport</h5>
+
+        <div class="features-grid">
+          <div class="feature">
+            <img src="https://img.icons8.com/pastel-glyph/64/be0854/swimming-pool.png" alt="" loading="lazy" />
+            <span>Swimming Pool</span>
+          </div>
+          <div class="feature">
+            <img src="https://img.icons8.com/ios/64/be0854/beach.png" alt="" loading="lazy" />
+            <span>Beach View</span>
+          </div>
+          <div class="feature">
+            <img src="https://img.icons8.com/ios-filled/64/be0854/emergency-exit.png" alt="" loading="lazy" />
+            <span>Fire Exit</span>
+          </div>
+          <div class="feature">
+            <img src="https://img.icons8.com/pastel-glyph/64/be0854/parking--v1.png" alt="" loading="lazy" />
+            <span>Car Parking</span>
+          </div>
+          <div class="feature">
+            <img src="https://img.icons8.com/pastel-glyph/64/be0854/hair-dryer--v1.png" alt="" loading="lazy" />
+            <span>Hair Dryer</span>
+          </div>
+          <div class="feature">
+            <img src="https://img.icons8.com/ios-filled/64/be0854/mini-bar.png" alt="" loading="lazy" />
+            <span>Mini Bar</span>
+          </div>
+          <div class="feature">
+            <img src="https://img.icons8.com/ios/64/be0854/cocktail.png" alt="" loading="lazy" />
+            <span>Drinks</span>
+          </div>
+          <div class="feature">
+            <img src="https://img.icons8.com/ios-filled/64/be0854/car.png" alt="" loading="lazy" />
+            <span>Airport Shuttle</span>
+          </div>
         </div>
-    </div>
-  </div>
-  <?php include("./includes/footer.php"); ?>
-  <script>
-    $(document).ready(function () {
-        $("nav").eq(0).addClass("bg-dark navbar-dark");
-    });
-  </script>
+      </div>
+    </section>
+
+  </main>
+
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
 </body>
 </html>

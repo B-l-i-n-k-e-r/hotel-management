@@ -1,72 +1,78 @@
 <?php
-require_once("./config.php");
-include("./includes/header.php");
+require_once(__DIR__ . "/config.php");
+include(__DIR__ . "/includes/header.php");
 ?>
-<body>
-  <header>
-    <?php include("./includes/navbar.php"); ?>
-  </header>
-  <div class="container my-5">
-    <div class="section-title">
-      <h2>Our finest collection of rooms</h2>
+<body class="has-nav has-hero">
+  <header class="page-header">
+    <?php include(__DIR__ . "/includes/navbar.php"); ?>
+    <div class="page-header-inner container">
+      <span class="eyebrow light">Our collection</span>
+      <h1>Rooms &amp; Suites</h1>
+      <p>Every room crafted for comfort — pick the one that fits your stay.</p>
     </div>
-    <div class="row custom-room-cards">
-      <?php
-          $sql = "SELECT * FROM rooms";
+  </header>
 
+  <main>
+    <section class="container section-pad">
+      <div class="section-title">
+        <span class="eyebrow">Handpicked</span>
+        <h2>Our finest collection of rooms</h2>
+      </div>
+
+      <div class="rooms-grid rooms-grid-2">
+        <?php
+          $sql = "SELECT * FROM rooms";
           $statement = $pdo->prepare($sql);
           $statement->execute();
-
           $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-          foreach ($rows as $row) {
-              $room_image = IMAGEROOT.$row["room_image"]; ?>
-      <!-- Room element start -->
-      <div class="room-card col-md-6">
-        <div class="card card-expanded">
-          <div class="basic">
-            <div class="card-body">
-              <img src="<?= $room_image ?>" alt="<?= htmlspecialchars($row["room_name"]); ?>" />
+          foreach ($rows as $row):
+            $room_image = IMAGEROOT.$row["room_image"];
+            $type = strtolower($row["room_type"]);
+        ?>
+          <article class="room-card">
+            <div class="room-card-media">
+              <span class="badge-float <?= htmlspecialchars($type); ?>">
+                <?= ucfirst(htmlspecialchars($row["room_type"])); ?>
+              </span>
+              <img
+                src="<?= htmlspecialchars($room_image) ?>"
+                alt="<?= htmlspecialchars($row["room_name"]); ?>"
+                loading="lazy"
+              />
             </div>
-            <div class="card-footer">
-              <div class="footer-head">
-                <div class="label <?= ucfirst($row["room_type"]); ?>"><?= ucfirst($row["room_type"]); ?></div>
-                <div class="price">$<?= $row["room_price"]; ?>/day</div>
+
+            <div class="room-card-body">
+              <div class="room-card-head">
+                <h3 class="room-name"><?= ucfirst(htmlspecialchars($row["room_name"])); ?></h3>
+                <div class="room-price">
+                  Ksh <?= number_format((float)$row["room_price"]); ?><span>/day</span>
+                </div>
               </div>
-              <div class="footer-body"><?= ucfirst($row["room_name"]); ?></div>
+
+              <ul class="room-meta">
+                <li><span>View</span><?= htmlspecialchars($row["room_view"]); ?></li>
+                <li><span>Bed</span><?= htmlspecialchars($row["bed_type"]); ?></li>
+                <li><span>Capacity</span><?= htmlspecialchars($row["room_capacity"]); ?></li>
+                <li class="amenities"><span>Amenities</span><?= htmlspecialchars($row["room_amenities"]); ?></li>
+              </ul>
+
+              <div class="room-card-actions">
+                <a
+                  id="<?= (int)$row["room_id"] ?>"
+                  href="<?= SROOT ?>/roomdetails.php?room_id=<?= (int)$row["room_id"] ?>"
+                  class="btn-primary-pill"
+                >
+                  View room details
+                </a>
+              </div>
             </div>
-          </div>
-          <div class="detail">
-            <ul class="list-group list-unstyled">
-              <li><span>View:&nbsp;</span><?= $row["room_view"]; ?></li>
-              <li><span>Bed type:&nbsp;</span><?= $row["bed_type"]; ?></li>
-              <li><span>Capacity:&nbsp;</span><?= $row["room_capacity"]; ?></li>
-              <li>
-                <span>Amenities:&nbsp;</span><?= $row["room_amenities"]; ?>
-              </li>
-              <p></p>
-              <li>
-                <a id="<?= $row["room_id"] ?>" href="roomdetails.php?room_id=<?= $row["room_id"] ?>" class="details btn btn-sm btn-outline-success">Room Details</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+          </article>
+        <?php endforeach; ?>
       </div>
-      <!-- Room element end -->
-      <?php
-          }
-      ?>
-    </div>
-  </div>
-  <?php include("./includes/footer.php"); ?>
-  <script>
-    $(document).ready(function() {
-        $("nav").eq(0).addClass("bg-dark");
-        $("nav").eq(0).addClass("navbar-dark");
-    
-        $("footer").eq(0).addClass("bg-dark");
-        $("footer").eq(0).addClass("text-light");
-    });
-  </script>
+    </section>
+  </main>
+
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
 </body>
 </html>

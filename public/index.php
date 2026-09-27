@@ -1,262 +1,269 @@
 <?php
-require_once("./config.php");
-include("./includes/header.php");
+require_once(__DIR__ . "/config.php");
+include(__DIR__ . "/includes/header.php");
 ?>
-<body>
+<body class="has-nav has-hero">
   <header id="home-header">
     <div id="home-header--bg-image">
-      <?php include("./includes/navbar.php"); ?>
+      <?php include(__DIR__ . "/includes/navbar.php"); ?>
+
       <div class="home-header--title">
-        <div class="container p-5">
-          <h1>Find the best deals</h1>
-          <h3 id="reservation-form">for your next trip</h3>
+        <div class="container">
+          <span class="eyebrow light">V &amp; N Hotel</span>
+          <h1>Find the best deals<br>for your next trip</h1>
+          <p class="subtitle">Handpicked rooms, premium service, unforgettable stays.</p>
+
+          <div class="hero-actions">
+            <a href="#featured-rooms" class="hero-cta">
+              <i class="fa fa-arrow-down"></i>&nbsp; Explore rooms
+            </a>
+            <a href="reservation.php" class="btn-ghost-pill hero-ghost">
+              Book now
+            </a>
+          </div>
+
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <strong>7</strong>
+              <span>Room types</span>
+            </div>
+            <div class="hero-meta-sep"></div>
+            <div class="hero-meta-item">
+              <strong>24/7</strong>
+              <span>Concierge</span>
+            </div>
+            <div class="hero-meta-sep"></div>
+            <div class="hero-meta-item">
+              <strong>4.9</strong>
+              <span>Guest rating</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </header>
+
   <main>
+    <!-- ============ Search form ============ -->
     <section id="home-form">
       <div class="wrapper">
         <form id="find-available-rooms-form">
           <div class="form-group">
-            <label for="check-in">Check in</label>
-            <input
-              type="hidden"
-              id="check-in"
-              class="form-control"
-              name="check-in"
-              />
-            <button id="check-in-button" class="btn input-button">
-            Check in date
+            <label for="check-in-button">Check in</label>
+            <input type="hidden" id="check-in" name="check-in" />
+            <button id="check-in-button" type="button" class="input-button">
+              Select date
             </button>
           </div>
+
           <div class="form-group">
-            <label for="check-in">Check out</label>
-            <input
-              type="hidden"
-              id="check-out"
-              class="form-control"
-              name="check-out"
-              value=""
-              />
-            <button id="check-out-button" class="btn input-button">
-            Check out date
+            <label for="check-out-button">Check out</label>
+            <input type="hidden" id="check-out" name="check-out" value="" />
+            <button id="check-out-button" type="button" class="input-button">
+              Select date
             </button>
           </div>
+
           <div class="form-group">
             <label for="form-dropdown">Guests</label>
             <button
-              class="btn dropdown-toggle"
+              class="dropdown-toggle"
               id="form-dropdown"
-              role="button"
+              type="button"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-              >
-            Add guests
+            >
+              Add guests
             </button>
             <ul class="dropdown-menu" aria-labelledby="form-dropdown">
               <li class="dropdown-menu-item">
                 <div class="form-group form-group-nested">
                   <label for="count-adults">Adults</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    name="count-adults"
-                    id="count-adults"
-                    placeholder="Ages 13 or above"
-                    />
+                  <input type="number" min="0" name="count-adults" id="count-adults" placeholder="Ages 13+" />
                 </div>
                 <div class="form-group form-group-nested">
                   <label for="count-children">Children</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    name="count-children"
-                    id="count-children"
-                    placeholder="Ages 1-12"
-                    />
+                  <input type="number" min="0" name="count-children" id="count-children" placeholder="Ages 1–12" />
                 </div>
               </li>
             </ul>
           </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary" name="find-rooms">
-            Search
+
+          <div class="form-group form-group-submit">
+            <button type="submit" class="search-btn" name="find-rooms">
+              <i class="fa fa-search"></i>&nbsp; Search
             </button>
           </div>
         </form>
       </div>
     </section>
-    <!-- Featured Rooms -->
+
+    <!-- ============ Featured Rooms ============ -->
     <section id="featured-rooms">
-      <div class="container my-5 py-5">
-        <div class="section-title">
-          <h2>Today's best deals</h2>
+      <div class="container section-pad">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Handpicked</span>
+            <h2>Today's best deals</h2>
+          </div>
+          <a href="<?= SROOT ?>/rooms.php" class="link-arrow">
+            View all rooms <i class="fa fa-arrow-right"></i>
+          </a>
         </div>
-        <div class="row custom-room-cards">
-          <div class="col col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="./media/images/rooms/1.jpg" alt="" />
+
+        <div class="rooms-grid">
+          <?php
+          $rooms = [
+            ['./media/images/rooms/1.jpg', 'Diamond Suite',    'Ksh. 12,000', 'Premium'],
+            ['./media/images/rooms/2.jpg', 'Executive Room',   'Ksh. 9,500',  'Executive'],
+            ['./media/images/rooms/3.jpg', 'Deluxe Twin',      'Ksh. 7,800',  'Deluxe'],
+            ['./media/images/rooms/4.jpg', 'Standard Queen',   'Ksh. 5,200',  'Standard'],
+          ];
+          foreach ($rooms as $r): ?>
+            <article class="room-card">
+              <div class="room-card-media">
+                <span class="badge-float <?= strtolower($r[3]) ?>"><?= $r[3] ?></span>
+                <img src="<?= $r[0] ?>" alt="<?= $r[1] ?>" loading="lazy" />
               </div>
-              <div class="card-footer">
-                <div class="footer-head">
-                  <div class="label">Premium</div>
-                  </div>
-                  <div class="price">Ksh.12,000/day</div>
-                <div class="footer-body">Daimond Suite</div>
-                <!-- <div class="footer-foot">lemon</div> -->
-              </div>
-            </div>
-          </div>
-          <div class="col col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="./media/images/rooms/2.jpg" alt="" />
-              </div>
-              <div class="card-footer">
-                <div class="footer-head">
-                  <div class="label">Premium</div>
-                  </div>
-                  <div class="price">Ksh.12,000/day</div>
-                <div class="footer-body">Daimond Suite</div>
-                <!-- <div class="footer-foot">lemon</div> -->
-              </div>
-            </div>
-          </div>
-          <div class="col col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="./media/images/rooms/3.jpg" alt="" />
-              </div>
-              <div class="card-footer">
-                <div class="footer-head">
-                  <div class="label">Premium</div>
+              <div class="room-card-body">
+                <div class="room-card-head">
+                  <h3 class="room-name"><?= $r[1] ?></h3>
+                  <div class="room-price"><?= $r[2] ?><span>/day</span></div>
                 </div>
-                  <div class="price">Ksh.12,000/day</div>
-                <div class="footer-body">Daimond Suite</div>
-                <!-- <div class="footer-foot">lemon</div> -->
+                <ul class="room-meta">
+                  <li><span>View</span>Ocean</li>
+                  <li><span>Beds</span>1 / Queen</li>
+                </ul>
               </div>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Accommodation ============ -->
+    <section id="decoration-accomodation" class="section-alt">
+      <div class="container section-pad">
+        <div class="split">
+          <div class="split-content">
+            <div class="section-title">
+              <span class="eyebrow">Comfort first</span>
+              <h2>Choose the perfect accommodation</h2>
             </div>
+            <p>
+              Guest expectations for premium are always the priority here at V&amp;N Hotel.
+              Every room is designed around rest, privacy, and the kind of view you'll want
+              to wake up to.
+            </p>
+
+            <ul class="value-list">
+              <li>Ocean and garden views</li>
+              <li>Premium linens and amenities</li>
+              <li>Daily housekeeping</li>
+            </ul>
+
+            <a href="#premium-section" class="link-arrow">
+              See premium rooms <i class="fa fa-arrow-right"></i>
+            </a>
           </div>
-          <div class="col col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="./media/images/rooms/4.jpg" alt="" />
-              </div>
-              <div class="card-footer">
-                <div class="footer-head">
-                  <div class="label">Premium</div>
-                  </div>
-                  <div class="price">Ksh.12,000/day</div>
-                <div class="footer-body">Daimond Suite</div>
-                <!-- <div class="footer-foot">lemon</div> -->
-              </div>
+          <div class="image-pair">
+            <div class="image-card">
+              <img src="./media/images/backgrounds/home-1.jpg" alt="" loading="lazy" />
+            </div>
+            <div class="image-card">
+              <img src="./media/images/backgrounds/home-2.jpg" alt="" loading="lazy" />
             </div>
           </div>
         </div>
       </div>
     </section>
-    <section id="decoration-accomodation">
-      <div class="container my-5 py-5">
-        <div class="row">
-          <div class="col-md-5">
-            <div class="content">
-              <div class="section-title">
-                <h2>Choose the perfect accomodation</h2>
-              </div>
-              <p>
-                Guest expections for premium are always the priority here on V&N Hotel.
-              </p>
-            </div>
-          </div>
-          <div class="col-md-7 card-container">
-            <div class="card">
-              <div class="card-body">
-                <img src="./media/images/backgrounds/home-1.jpg" alt="" />
-              </div>
-              <div class="card-footer">lemon</div>
-            </div>
-            <div class="card">
-              <div class="card-body">
-                <img src="./media/images/backgrounds/home-2.jpg" alt="" />
-              </div>
-              <div class="card-footer">lemon</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
+    <!-- ============ Premium ============ -->
     <section id="premium-section">
-      <div class="container my-5 py-5">
-        <div class="row">
-          <div class="col-md-7">
-            <div class="card-container">
-              <div class="card">
-                <div class="card-body">
-                  <img src="./media/images/backgrounds/home-1.jpg" alt="" />
-                </div>
-                <div class="card-footer">
-                  <div class="footer-head">
-                    <div class="label">Premium</div>
-                  </div>
-                  <div class="price">Ksh.12,000/day</div>
-                <div class="footer-body">Daimond Suite</div>
-                  <!-- <div class="footer-foot">lemon</div> -->
+      <div class="container section-pad">
+        <div class="split split-reverse">
+          <div class="image-pair">
+            <article class="room-card">
+              <div class="room-card-media">
+                <span class="badge-float premium">Premium</span>
+                <img src="./media/images/backgrounds/home-1.jpg" alt="" loading="lazy" />
+              </div>
+              <div class="room-card-body">
+                <div class="room-card-head">
+                  <h3 class="room-name">Diamond Suite</h3>
+                  <div class="room-price">Ksh. 12,000<span>/day</span></div>
                 </div>
               </div>
-              <div class="card">
-                <div class="card-body">
-                  <img src="./media/images/backgrounds/home-2.jpg" alt="" />
-                </div>
-                <div class="card-footer">
-                  <div class="footer-head">
-                    <div class="label">Premium</div>
-                  </div>
-                  <div class="price">Ksh.12,000/day</div>
-                <div class="footer-body">Daimond Suite</div>
-                  <!-- <div class="footer-foot">lemon</div> -->
+            </article>
+            <article class="room-card">
+              <div class="room-card-media">
+                <span class="badge-float premium">Premium</span>
+                <img src="./media/images/backgrounds/home-2.jpg" alt="" loading="lazy" />
+              </div>
+              <div class="room-card-body">
+                <div class="room-card-head">
+                  <h3 class="room-name">Diamond Suite</h3>
+                  <div class="room-price">Ksh. 12,000<span>/day</span></div>
                 </div>
               </div>
-            </div>
+            </article>
           </div>
-          <div class="col-md-5">
-            <div class="content">
-              <div class="section-title">
-                <h2>Premium deals for your premium needs</h2>
-              </div>
-              <p>
-                No doubts, No questions....All you need it available just be ready for the experience.
-              </p>
+          <div class="split-content">
+            <div class="section-title">
+              <span class="eyebrow">Just for you</span>
+              <h2>Premium deals for your premium needs</h2>
             </div>
+            <p>
+              No doubts, no questions — everything you need is available. Just be
+              ready for the experience.
+            </p>
+
+            <ul class="value-list">
+              <li>Late checkout on request</li>
+              <li>Complimentary breakfast</li>
+              <li>Airport pickup</li>
+            </ul>
+
+            <a href="reservation.php" class="hero-cta" style="margin-top: 12px;">
+              Book a premium stay
+            </a>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- ============ Newsletter banner ============ -->
     <section id="home-banner">
       <div class="banner">
         <div class="container">
           <div class="jumbotron">
-            <h6>Our newsletter</h6>
-            <h2>Become a member and enjoy flat 25% discounts on Booking.</h2>
+            <span class="eyebrow light">Our newsletter</span>
+            <h2>Become a member and enjoy a flat 25% discount on bookings.</h2>
+            <p class="banner-sub">
+              Join our list for early access to seasonal offers and new suites.
+            </p>
+            <form class="newsletter-form" onsubmit="event.preventDefault();">
+              <input type="email" placeholder="you@example.com" required />
+              <button type="submit">Join</button>
+            </form>
           </div>
         </div>
       </div>
     </section>
   </main>
-  <?php include("./includes/footer.php"); ?>
+
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
+
   <script>
     $(document).ready(function () {
       $("#find-available-rooms-form").submit(function (event) {
         event.preventDefault();
-        
-        var indate = $("#check-in").val();
-        var outdate = $("#check-out").val();
-        var adults = $("#count-adults").val() || 0;
+        var indate   = $("#check-in").val();
+        var outdate  = $("#check-out").val();
+        var adults   = $("#count-adults").val() || 0;
         var children = $("#count-children").val() || 0;
-        
-        // Form should process as long as a check-in date is selected
+
         if (indate !== "" && indate !== null) {
           window.location.href = `reservation.php?check_in_date=${indate}&check_out_date=${outdate}&adults=${adults}&children=${children}`;
         } else {

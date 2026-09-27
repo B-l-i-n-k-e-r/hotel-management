@@ -1,88 +1,97 @@
 <?php
-  require_once("./config.php");
+require_once(__DIR__ . "/config.php");
 
-  $status = array(
-    "verified" => true
-  );
+// Default status
+$status = ["verified" => null]; // null = unknown, true = verified, false = invalid link
 
- if (isset($_SESSION["user_email"])) {
-     $verification = isUserVerified($pdo, $_SESSION["user_email"]);
-     $status["verified"] = true;
+// --- Case 1: user is logged in ---
+if (isLoggedIn()) {
+    $verification = isUserVerified($pdo, $_SESSION["user_email"]);
 
-     header("Location: index.php");
-     return;
-     if ($verification["verified"] == 1) {
-         $status["verified"] = true;
+    // If already verified, send them home
+    if (!empty($verification["verified"]) && $verification["verified"] == 1) {
+        header("Location: index.php");
+        exit;
+    }
+    // Otherwise: fall through so they see the "check your email" screen
+}
 
-         header("Location: index.php");
-         return;
-     }
- }
+// --- Case 2: user clicked a verification link ---
+if (isset($_GET["email"], $_GET["hash"])) {
+    $user_email        = $_GET["email"];
+    $verification_hash = $_GET["hash"];
 
-  if (isset($_GET["email"]) && isset($_GET["hash"])) {
-      $user_email = $_GET["email"];
-      $verification_hash = $_GET["hash"];
+    // Look for a matching user with a non-expired verification
+    $sql = "SELECT user_id FROM users
+            WHERE user_email = :email
+              AND verification_hash = :hash
+            LIMIT 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ":email" => $user_email,
+        ":hash"  => $verification_hash,
+    ]);
 
-      $sql = "SELECT user_id FROM users WHERE user_email = :user_email AND verification_hash = :verification_hash";
+    if ($stmt->fetch(PDO::FETCH_ASSOC)) {
+        // Match found — mark as verified
+        $update = $pdo->prepare("
+            UPDATE users
+            SET user_verified = 1, verification_hash = NULL
+            WHERE user_email = :email AND verification_hash = :hash
+        ");
+        $update->execute([
+            ":email" => $user_email,
+            ":hash"  => $verification_hash,
+        ]);
 
-      $statement = $pdo->prepare($sql);
+        $_SESSION["message"] = "Your account is now verified. You can log in.";
 
-      $statement->execute(array(
-        ":user_email" => $user_email,
-        ":verification_hash" => $verification_hash
-      ));
+        // If they're already logged in, send home; otherwise to login
+        if (isLoggedIn()) {
+            header("Location: index.php");
+        } else {
+            header("Location: login.php");
+        }
+        exit;
+    }
 
-      if ($statement->fetch(PDO::FETCH_ASSOC) != false) {
-          // Verify User
-          $sql = "UPDATE users SET user_verified = 1 WHERE user_email = :user_email AND verification_hash = :verification_hash";
-
-          $statement = $pdo->prepare($sql);
-
-          $statement->execute(array(
-            ":user_email" => $user_email,
-            ":verification_hash" => $verification_hash
-          ));
-
-          $status["verified"] = true;
-
-          header("Location: index.php");
-          return;
-      }
-
-      $status["verified"] = false;
-  }
+    // No match — invalid link
+    $status["verified"] = false;
+}
 ?>
-
-
-<?php
-include("./includes/header.php");
-?>
-<body>
+<?php include(__DIR__ . "/includes/header.php"); ?>
+<body class="has-nav has-hero">
   <header id="verify-user">
     <div id="verify-user--bg-image">
-      <?php include("./includes/navbar.php"); ?>
+      <?php include(__DIR__ . "/includes/navbar.php"); ?>
       <div class="wrapper">
-      <div class="container">
-            <div class="content p-5">
-                <h2><b>Verify your account</b></h2>
-                <p>A verification link has been sent to your registered email id</p>
-                <?php if ($status["verified"]) { ?> 
-                  <h3 class="text-success ">Your account has been verified redirecting...</h3>
-                <?php } elseif ($status["verified"] == null) { ?> 
-                <p></p>
-                <?php } else {?> 
-                  <h3 class="text-danger">Invalid link...</h3>
-                <?php } ?>
-                <form action="./core/resend_mail.php" method="GET">
-                  <button class="btn btn-outline-primary" type="submit" name="resend" value="resend">Resend email</button>
-                </form>
-            </div>
-      </div>
+        <div class="container">
+          <div class="content p-5">
+            <h2><b>Verify your account</b></h2>
+
+            <?php if ($status["verified"] === false): ?>
+              <h3 class="text-danger">Invalid or expired link</h3>
+              <p>The verification link you used is not valid. Request a new one below.</p>
+            <?php else: ?>
+              <p>A verification link has been sent to your registered email address.</p>
+              <p class="text-muted" style="font-size: 14px;">
+                Check your inbox (and spam folder) for an email from V&amp;N Hotel.
+              </p>
+            <?php endif; ?>
+
+            <form action="<?= SROOT ?>/core/resend_mail.php" method="GET">
+              <button class="btn btn-outline-primary" type="submit" name="resend" value="resend">
+                Resend verification email
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </header>
-  <main>
-  </main>
-  <?php include("./includes/footer.php"); ?>
+
+  <main></main>
+
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
 </body>
 </html>

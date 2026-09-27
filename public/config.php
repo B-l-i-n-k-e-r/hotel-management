@@ -2,11 +2,11 @@
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(__FILE__));
 
-// Since your server root is the public folder, strip out subfolder paths
-define("SROOT", "http://" . $_SERVER['HTTP_HOST']);
+// Base URL — includes /public because that's the document root on local
+define("SROOT", "http://" . $_SERVER['HTTP_HOST'] . "/public");
 define("IMAGEROOT", SROOT . "/media/images/rooms/");
 
-// Simple native .env loader to parse environment variables
+// Simple native .env loader
 $envPath = dirname(ROOT) . DS . '.env';
 if (file_exists($envPath)) {
     $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -24,10 +24,10 @@ if (file_exists($envPath)) {
 }
 
 // Database
-define("DB_NAME", getenv("DB_DATABASE")); // database name
-define("DB_USER", getenv("DB_USERNAME")); // database user
-define("DB_PASSWORD", getenv("DB_PASSWORD")); // database password
-define("DB_HOST", getenv("DB_HOST")); // database host
+define("DB_NAME", getenv("DB_DATABASE"));
+define("DB_USER", getenv("DB_USERNAME"));
+define("DB_PASSWORD", getenv("DB_PASSWORD"));
+define("DB_HOST", getenv("DB_HOST"));
 
 // FTP
 define("FTPSERVER", getenv("env_ftp_server"));

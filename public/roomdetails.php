@@ -1,195 +1,179 @@
 <?php
-require_once("./config.php");
-include("./includes/header.php");
+require_once(__DIR__ . "/config.php");
+include(__DIR__ . "/includes/header.php");
 
-   if(!isset($_GET["room_id"])) {
-      header("Location: rooms.php");
-   }
+if (!isset($_GET["room_id"]) || $_GET["room_id"] === "") {
+    header("Location: rooms.php");
+    exit;
+}
 
+$room_id = (int)$_GET["room_id"];
+
+$sql = "SELECT * FROM rooms WHERE room_id = :room_id";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([":room_id" => $room_id]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$row) {
+    header("Location: rooms.php");
+    exit;
+}
 ?>
-  <body>
-    <style>
-      .col-4 {
-        background-color: whitesmoke;
-        border-radius: 10px;
-        overflow-y: auto !important;
-        height:800px
-        
-      }
+<body class="has-nav has-hero">
+  <header class="page-header">
+    <?php include(__DIR__ . "/includes/navbar.php"); ?>
+    <div class="page-header-inner container">
+      <span class="eyebrow light"><?= htmlspecialchars($row["room_type"]) ?></span>
+      <h1><?= htmlspecialchars($row["room_name"]) ?></h1>
+      <p>Room <?= htmlspecialchars($row["room_number"]) ?> &middot; Floor <?= htmlspecialchars($row["room_floor"]) ?> &middot; <?= htmlspecialchars($row["room_view"]) ?> view</p>
+    </div>
+  </header>
 
-      .col-8{
-        padding-right:50px ;
-      }
+  <main>
+    <section class="container section-pad">
 
-      img {
-        border-radius: 10px;
-        width:auto !important;
-        height: 500px;
-      }
+      <div class="room-detail-grid">
 
-      .container {
-        margin-top: 30px;
-        
-        
-      }
+        <!-- ============ Left: gallery + description ============ -->
+        <div class="room-detail-main">
 
-      h3{
-        /* font-family: 'Amaranth';font-size: 30px; */
-        font-weight:bold;
-      }
+          <!-- Image -->
+          <div class="room-detail-hero">
+            <img
+              src="<?= htmlspecialchars(IMAGEROOT . $row["room_image"]) ?>"
+              alt="<?= htmlspecialchars($row["room_name"]) ?>"
+            />
+            <?php if ($row["room_featured"] == 1): ?>
+              <span class="badge-float">Featured</span>
+            <?php endif; ?>
+          </div>
 
-      h4{
-        /* font-family: 'Amaranth';font-size: 18px;  */
-        margin-left: 14px;
-      }
-
-      h2{
-        font-family: 'Berkshire Swash';
-        font-weight:bold;
-      }
-
-      .btn{
-        margin-left: 14px;
-        margin-top:10px
-        
-      }
-
-      button{
-        width:200px;
-        border-radius: 7px !important;
-      }
-
-      p{
-        font-family: 'Amaranth';
-      }
-
-      .review{
-        padding: 0px 10px 0px 10px;
-        margin:15px 10px 0px 10px;
-        border-radius: 10px;
-      }
-
-     
-    </style>
-    <header>
-      <?php include("./includes/navbar.php"); ?>
-    </header>
-    <div class="container">
-   <div class="row">
-      <div class="col col-8 col-md-8">
-         <div class="row">
-         <?php
-               $sql = "SELECT * FROM rooms WHERE room_id = :room_id";
-               $stmt = $pdo->prepare($sql);
-               $stmt->execute(array(
-                  ":room_id" => $_GET["room_id"],
-               ));
-               $row = $stmt->fetch(PDO::FETCH_ASSOC);
-         ?>
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-               <div class="carousel-inner" id="room_carousel">
-                  <div class="carousel-item active">
-                     <img class="d-block w-100" src="<?= IMAGEROOT.$row["room_image"]; ?>" alt="First slide">
-                  </div>
-               </div>
-               <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-               <span class="sr-only">Previous</span>
-               </a>
-               <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-               <span class="carousel-control-next-icon" aria-hidden="true"></span>
-               <span class="sr-only">Next</span>
-               </a>
+          <!-- Price + Book row -->
+          <div class="room-detail-bar">
+            <div>
+              <span class="room-detail-price-label">Starting from</span>
+              <div class="room-detail-price">
+                Ksh <?= number_format((float)$row["room_price"]) ?><span>/day</span>
+              </div>
             </div>
-         </div>
-         <div class="row">
-            <div class="col">
-               <h3><?= $row["room_name"] ?></h3>
-            </div>
-            <div class="col" style="margin-top: 13px; margin-left:45px; font-family: 'Amaranth';font-weight:bold; font-size:20px">Starts from:something here...</div>
-         </div>
-         <div class="row">
-            <div class="col" style="color:#FA4A5C;">
-               <p><i class="fa fa-bed" aria-hidden="true"></i> <?= $row["room_beds"] ?> bedroom</p>
-            </div>
-            <div class="col" style="color:#FA4A5C;">
-               <p><i class="fa fa-shower" aria-hidden="true"></i> <?= $row["room_name"] ?> bathroom</p>
-            </div>
-            <div class="col" style="color:#FA4A5C;">
-               <p><i class="fa fa-square" aria-hidden="true"></i> 1250 sq.ft</p>
-            </div>
-            <div class="col" style="color:#FA4A5C;">
-               <p><i class="fa fa-lock" aria-hidden="true"></i> Highly Secured</p>
-            </div>
-         </div>
-         <div class="row">
-            <h4>DESCRIPTION</h4>
-         </div>
-         <div class="row">
-            <div class="col">
-               <p style=color:lightgrey>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eos
-                  illum veniam qui veritatis praesentium voluptates atque enim
-                  quia exercitationem ipsa quaerat, delectus officia dolore rem
-                  consequatur nesciunt. Ullam, consequuntur necessitatibus
-               </p>
-            </div>
-         </div>
-         <div class="row">
-            <a class="btn btn-danger" href="reservation.php">Book now</a>
-         </div>
+            <a href="<?= SROOT ?>/reservation.php" class="btn-primary-pill room-detail-cta">
+              <i class="fa fa-calendar-check-o"></i>&nbsp; Book this room
+            </a>
+          </div>
+
+          <!-- Quick facts -->
+          <ul class="room-detail-facts">
+            <li>
+              <i class="fa fa-bed"></i>
+              <div>
+                <span>Beds</span>
+                <strong><?= htmlspecialchars($row["room_beds"]) ?> × <?= htmlspecialchars($row["bed_type"]) ?></strong>
+              </div>
+            </li>
+            <li>
+              <i class="fa fa-users"></i>
+              <div>
+                <span>Capacity</span>
+                <strong><?= htmlspecialchars($row["room_capacity"]) ?> guests</strong>
+              </div>
+            </li>
+            <li>
+              <i class="fa fa-eye"></i>
+              <div>
+                <span>View</span>
+                <strong><?= htmlspecialchars($row["room_view"]) ?></strong>
+              </div>
+            </li>
+            <li>
+              <i class="fa fa-building-o"></i>
+              <div>
+                <span>Floor</span>
+                <strong><?= htmlspecialchars($row["room_floor"]) ?></strong>
+              </div>
+            </li>
+          </ul>
+
+          <!-- About this room -->
+          <div class="room-detail-section">
+            <h2>About this room</h2>
+            <p>
+              The <?= htmlspecialchars($row["room_name"]) ?> is a <?= htmlspecialchars($row["room_type"]) ?>
+              room with a <?= htmlspecialchars($row["room_view"]) ?> view, <?= htmlspecialchars($row["room_beds"]) ?>
+              <?= htmlspecialchars($row["bed_type"]) ?> bed<?= $row["room_beds"] == 1 ? "" : "s" ?>, and capacity for
+              <?= htmlspecialchars($row["room_capacity"]) ?> guests. Ideal for guests looking for comfort and convenience
+              in the heart of V&amp;N Hotel.
+            </p>
+          </div>
+
+          <!-- Amenities -->
+          <div class="room-detail-section">
+            <h2>Amenities</h2>
+            <?php
+            // Split amenities string on commas for a clean list
+            $amenities = array_filter(array_map("trim", explode(",", $row["room_amenities"] ?? "")));
+            ?>
+            <?php if ($amenities): ?>
+              <ul class="amenities-list">
+                <?php foreach ($amenities as $a): ?>
+                  <li>
+                    <i class="fa fa-check"></i>
+                    <?= htmlspecialchars($a) ?>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            <?php else: ?>
+              <p class="text-muted">Amenities will be listed here.</p>
+            <?php endif; ?>
+          </div>
+
+        </div>
+
+        <!-- ============ Right: sticky booking sidebar ============ -->
+        <aside class="room-detail-aside">
+          <div class="aside-card">
+            <h2 class="aside-title">Reserve this room</h2>
+
+            <ul class="aside-list">
+              <li>
+                <span>Room</span>
+                <strong><?= htmlspecialchars($row["room_name"]) ?></strong>
+              </li>
+              <li>
+                <span>Type</span>
+                <strong><?= htmlspecialchars($row["room_type"]) ?></strong>
+              </li>
+              <li>
+                <span>Price</span>
+                <strong>Ksh <?= number_format((float)$row["room_price"]) ?>/day</strong>
+              </li>
+              <li>
+                <span>Status</span>
+                <strong>
+                  <?php if ($row["room_booked"] == 1): ?>
+                    <span class="pill pill-neutral">Booked</span>
+                  <?php else: ?>
+                    <span class="pill pill-success">Available</span>
+                  <?php endif; ?>
+                </strong>
+              </li>
+            </ul>
+
+            <?php if ($row["room_booked"] == 0): ?>
+              <a href="<?= SROOT ?>/reservation.php" class="btn-primary-pill" style="width: 100%;">
+                Continue to booking
+              </a>
+            <?php else: ?>
+              <a href="<?= SROOT ?>/rooms.php" class="btn-ghost-pill btn-ghost-light" style="width: 100%; justify-content: center;">
+                Browse other rooms
+              </a>
+            <?php endif; ?>
+          </div>
+        </aside>
+
       </div>
-      <div class="col col-4 col-md-4">
-         <h3>Reviews</h3>
-         <div class="row">
-            <div class="review bg-white">
-               <p>Users</p>
-               <P style=color:lightgrey>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eos
-                  illum veniam qui veritatis praesentium voluptates atque enim
-                  quia exercitationem ipsa quaerat, delectus officia dolore rem
-                  consequatur nesciunt. Ullam, consequuntur necessitatibus 
-               </P>
-            </div>
-         </div>
-         <div class="row">
-            <div class="review bg-white">
-               <p>Users</p>
-               <P style=color:lightgrey>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eos
-                  illum veniam qui veritatis praesentium voluptates atque enim
-                  quia exercitationem ipsa quaerat, delectus officia dolore rem
-                  consequatur nesciunt. Ullam, consequuntur necessitatibus 
-               </P>
-            </div>
-         </div>       
-      </div>
-   </div>
-</div>
-    <?php include("./includes/footer.php"); ?>
-    <script>
-      $(document).ready(function() {
+    </section>
+  </main>
 
-         var images = [
-            "https://i.pinimg.com/originals/c6/60/24/c66024ea79527d9bbafe79ed171558b9.jpg",
-            "https://housely.com/wp-content/uploads/2016/07/Hotel-Room.jpg",
-            "https://images.fineartamerica.com/images-medium-large/nice-hotel-room-atiketta-sangasaeng.jpg"
-         ];
-
-         images.forEach(item => $("#room_carousel").append(
-            `
-            <div class="carousel-item">
-                     <img class="d-block w-100" src="${item}">
-                  </div>
-            `
-         ));
-
-
-        $("nav").eq(0).addClass("bg-dark");
-        $("nav").eq(0).addClass("navbar-dark");
-
-        $("footer").eq(0).addClass("bg-dark");
-        $("footer").eq(0).addClass("text-light");
-        // bg-dark navbar-dark 
-    });
-    </script>
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
 </body>
 </html>

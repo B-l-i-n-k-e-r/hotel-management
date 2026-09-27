@@ -141,31 +141,44 @@ if (isset($_GET["reservation_id"])) {
         $mpdf->writeHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
         $mpdf->writeHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 
-        $mpdf->Output('hotel_reservation_' . $_GET["reservation_id"] . '.pdf', 'D');
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+
+        $filename = 'hotel_reservation_' . $_GET["reservation_id"] . '.pdf';
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . $filename . '"');
+        header('Cache-Control: private, max-age=0, must-revalidate');
+        header('Pragma: public');
+
+        $mpdf->Output($filename, \Mpdf\Output\Destination::INLINE);
         exit;
     }
 }
 ?>
-
-<?php include("./includes/header.php"); ?>
-<body>
- <header>
-    <?php include("./includes/navbar.php"); ?>
- </header>
-    <div class="container my-5 py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 text-center">
-                <p class="text-danger h4 py-3">Reservation details could not be verified.</p>
-                <a href="index.php" class="btn btn-outline-dark mt-2">Return to Home</a>
-            </div>
-        </div>
+<?php include(__DIR__ . "/includes/header.php"); ?>
+<body class="has-nav">
+  <header class="page-header">
+    <?php include(__DIR__ . "/includes/navbar.php"); ?>
+    <div class="page-header-inner container">
+      <span class="eyebrow light">Invoice</span>
+      <h1>Invoice not found</h1>
+      <p>We couldn't verify those reservation details.</p>
     </div>
-    <?php include("./includes/footer.php"); ?>
-    <script>
-        $(document).ready(function() {
-            $("nav").eq(0).addClass("bg-dark navbar-dark");
-            $("footer").eq(0).addClass("bg-dark text-light");
-        });
-    </script>
+  </header>
+
+  <main>
+    <section class="container section-pad" style="text-align: center;">
+      <p style="color: var(--muted); margin-bottom: 24px;">
+        The invoice you're looking for doesn't exist or has been removed.
+      </p>
+      <a href="<?= SROOT ?>/index.php" class="btn-primary-pill" style="display: inline-flex; max-width: 240px; margin: 0 auto;">
+        Return to home
+      </a>
+    </section>
+  </main>
+
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
 </body>
 </html>
