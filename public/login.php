@@ -29,6 +29,9 @@ if (isLoggedIn()) {
           <h5><span class="small">or sign in with email</span></h5>
 
           <form action="" id="login_user" method="post" class="form" novalidate>
+            <!-- CSRF Token -->
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+            
             <div id="login-error" class="form-error" hidden></div>
 
             <div class="form-group">
@@ -57,6 +60,11 @@ if (isLoggedIn()) {
                 required
               />
               <small id="user_password_error" class="error-message text-danger"></small>
+              
+              <!-- FORGOT PASSWORD LINK ADDED HERE -->
+              <div style="text-align: right; margin-top: 8px;">
+                <a href="forgot_password.php" style="font-size: 0.9em; color: #007bff; text-decoration: none;">Forgot Password?</a>
+              </div>
             </div>
 
             <div class="form-group">

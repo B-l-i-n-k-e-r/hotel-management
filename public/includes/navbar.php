@@ -23,7 +23,7 @@ function nav_link_is_active($current, $matches) {
   <div class="site-nav__inner">
 
     <a class="site-nav__brand" href="<?= SROOT ?>/index.php">
-      <img src="<?= SROOT ?>/media/images/logo/aaa_logo.png" alt="V&N Hotel" />
+      <img src="<?= SROOT ?>/media/images/logo/logo.jpeg" alt="V&N Hotel" />
     </a>
 
     <button

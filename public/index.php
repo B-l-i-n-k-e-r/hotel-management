@@ -49,7 +49,7 @@ include(__DIR__ . "/includes/header.php");
       <div class="wrapper">
         <form id="find-available-rooms-form">
           <div class="form-group">
-            <label for="check-in-button">Check in</label>
+            <label for="check-in-button">From</label>
             <input type="hidden" id="check-in" name="check-in" />
             <button id="check-in-button" type="button" class="input-button">
               Select date
@@ -57,37 +57,17 @@ include(__DIR__ . "/includes/header.php");
           </div>
 
           <div class="form-group">
-            <label for="check-out-button">Check out</label>
-            <input type="hidden" id="check-out" name="check-out" value="" />
+            <label for="check-out-button">To</label>
+            <input type="hidden" id="check-out" name="check-out" />
             <button id="check-out-button" type="button" class="input-button">
               Select date
             </button>
           </div>
 
           <div class="form-group">
-            <label for="form-dropdown">Guests</label>
-            <button
-              class="dropdown-toggle"
-              id="form-dropdown"
-              type="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Add guests
+            <button type="button" id="clear-dates" class="input-button">
+              <i class="fa fa-times"></i>&nbsp; Clear
             </button>
-            <ul class="dropdown-menu" aria-labelledby="form-dropdown">
-              <li class="dropdown-menu-item">
-                <div class="form-group form-group-nested">
-                  <label for="count-adults">Adults</label>
-                  <input type="number" min="0" name="count-adults" id="count-adults" placeholder="Ages 13+" />
-                </div>
-                <div class="form-group form-group-nested">
-                  <label for="count-children">Children</label>
-                  <input type="number" min="0" name="count-children" id="count-children" placeholder="Ages 1–12" />
-                </div>
-              </li>
-            </ul>
           </div>
 
           <div class="form-group form-group-submit">
@@ -96,6 +76,20 @@ include(__DIR__ . "/includes/header.php");
             </button>
           </div>
         </form>
+      </div>
+    </section>
+
+    <!-- ============ Search results (hidden until search runs) ============ -->
+    <section id="search-results" style="display:none;">
+      <div class="container section-pad">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Bookings</span>
+            <h2 id="results-title">Matching reservations</h2>
+          </div>
+        </div>
+        <p id="results-status"></p>
+        <div class="rooms-grid" id="results-grid"></div>
       </div>
     </section>
 
@@ -256,21 +250,99 @@ include(__DIR__ . "/includes/header.php");
   <?php include(__DIR__ . "/includes/footer.php"); ?>
 
   <script>
-    $(document).ready(function () {
-      $("#find-available-rooms-form").submit(function (event) {
-        event.preventDefault();
-        var indate   = $("#check-in").val();
-        var outdate  = $("#check-out").val();
-        var adults   = $("#count-adults").val() || 0;
-        var children = $("#count-children").val() || 0;
+  $(document).ready(function () {
+    function esc(s) {
+      return $('<div>').text(s == null ? '' : s).html();
+    }
 
-        if (indate !== "" && indate !== null) {
-          window.location.href = `reservation.php?check_in_date=${indate}&check_out_date=${outdate}&adults=${adults}&children=${children}`;
-        } else {
-          alert("Please select a check-in date.");
+    // Clear both dates
+    $("#clear-dates").on("click", function () {
+      $("#check-in").val("");
+      $("#check-out").val("");
+      $("#check-in-button").text("Select date");
+      $("#check-out-button").text("Select date");
+    });
+
+    $("#find-available-rooms-form").submit(function (event) {
+      event.preventDefault();
+
+      var fromDate = $("#check-in").val()  || "";
+      var toDate   = $("#check-out").val() || "";
+
+      if (!fromDate || !toDate) {
+        alert("Please select both From and To dates.");
+        return;
+      }
+      if (new Date(toDate) <= new Date(fromDate)) {
+        alert("'To' date must be after 'From' date.");
+        return;
+      }
+
+      var $section = $("#search-results");
+      var $status  = $("#results-status");
+      var $grid    = $("#results-grid");
+
+      $section.show();
+      $status.text("Searching available rooms…");
+      $grid.empty();
+
+      $.ajax({
+        url: "search_reservations.php",
+        method: "GET",
+        dataType: "json",
+        data: { from: fromDate, to: toDate }
+      })
+      .done(function (res) {
+        if (!res || res.error) {
+          $status.text((res && res.error) ? res.error : "Search failed.");
+          return;
         }
+
+        var rooms = res.rooms || [];
+        if (!rooms.length) {
+          $status.text("No rooms available for those dates.");
+          return;
+        }
+
+        $status.text(rooms.length + " room(s) available");
+
+        rooms.forEach(function (r) {
+          var card = `
+            <article class="room-card">
+              <div class="room-card-media">
+                <span class="badge-float ${esc((r.room_type||'').toLowerCase())}">${esc(r.room_type)}</span>
+                <img src="${esc(r.image)}" alt="${esc(r.room_name)}" loading="lazy" />
+              </div>
+              <div class="room-card-body">
+                <div class="room-card-head">
+                  <h3 class="room-name">${esc(r.room_name)}</h3>
+                  <div class="room-price">Ksh. ${esc(r.price)}<span>/day</span></div>
+                </div>
+                <ul class="room-meta">
+                  <li><span>View</span>${esc(r.view)}</li>
+                  <li><span>Beds</span>${esc(r.beds)} / ${esc(r.bed_type)}</li>
+                  <li><span>Capacity</span>${esc(r.capacity)} guests</li>
+                  <li><span>Nights</span>${esc(r.nights)}</li>
+                  <li><span>Total</span>Ksh. ${esc(r.total)}</li>
+                </ul>
+                <a class="hero-cta" style="margin-top:12px;"
+                   href="reservation.php?room_id=${encodeURIComponent(r.id)}&check_in=${encodeURIComponent(r.check_in_date)}&check_out=${encodeURIComponent(r.check_out_date)}">
+                  Reserve this room
+                </a>
+              </div>
+            </article>`;
+          $grid.append(card);
+        });
+
+        $('html, body').animate({
+          scrollTop: $section.offset().top - 80
+        }, 400);
+      })
+      .fail(function () {
+        $status.text("Search failed. Please try again.");
       });
     });
-  </script>
+  });
+</script>
 </body>
 </html>

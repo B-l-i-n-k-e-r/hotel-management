@@ -29,6 +29,15 @@ define("DB_USER", getenv("DB_USERNAME"));
 define("DB_PASSWORD", getenv("DB_PASSWORD"));
 define("DB_HOST", getenv("DB_HOST"));
 
+// Mail
+define("MAIL_HOST",      getenv("MAIL_HOST"));
+define("MAIL_PORT",      (int)getenv("MAIL_PORT"));
+define("MAIL_USERNAME",  getenv("MAIL_USERNAME"));
+define("MAIL_PASSWORD",  getenv("MAIL_PASSWORD"));
+define("MAIL_FROM_NAME", getenv("MAIL_FROM_NAME"));
+define("MAIL_FROM",      getenv("MAIL_FROM"));
+define("MAIL_ADMIN",     getenv("MAIL_ADMIN"));
+
 // FTP
 define("FTPSERVER", getenv("env_ftp_server"));
 define("FTPUSER", getenv("env_ftp_user"));

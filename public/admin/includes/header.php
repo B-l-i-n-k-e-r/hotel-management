@@ -15,7 +15,10 @@ $nav_items = [
     ["key" => "rooms",        "href" => "rooms.php",       "icon" => "fa-home",     "label" => "Rooms",        "group" => "Main"],
     ["key" => "reservations", "href" => "reservation.php", "icon" => "fa-bookmark", "label" => "Reservations", "group" => "Main"],
     ["key" => "users",        "href" => "users.php",       "icon" => "fa-users",    "label" => "Users",        "group" => "Manage"],
-];
+    ["key" => "feedback",     "href" => "feedback.php",    "icon" => "fa-comments", "label" => "Feedback",     "group" => "Manage"],
+    ["key" => "messages", "href" => "messages.php", "icon" => "fa-envelope-o", "label" => "Customer Care", "group" => "Manage"],
+
+    ];
 ?>
 <!DOCTYPE html>
 <html lang="en">

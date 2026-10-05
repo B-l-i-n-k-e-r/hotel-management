@@ -4,12 +4,11 @@ $(document).ready(function () {
   });
 
   // Check in
-
   $("#check-in").datepicker({
-    minDate: 0,
+    minDate: new Date(2000, 0, 1),   // ← was 0 (today); now allows 2000 onward
+    // maxDate: null,                // optional: unlimited future
     numberOfMonths: [1, 2],
     onSelect: function () {
-      // $("#check-out").datepicker("show");
       $("#check-in-button").html($("#check-in").val());
     },
   });
@@ -22,17 +21,12 @@ $(document).ready(function () {
     $("#check-in").datepicker("show");
   });
 
-  // $("#check-in").change(function () {
-  //   $("#check-in-button").html($("#check-in").val());
-  // });
-
   // Check out
-
   $("#check-out").datepicker({
-    minDate: 0,
+    minDate: new Date(2000, 0, 1),   // ← was 0 (today); now allows 2000 onward
+    // maxDate: null,
     numberOfMonths: [1, 2],
     onSelect: function () {
-      // $("#check-out").datepicker("show");
       $("#check-out-button").html($("#check-out").val());
     },
   });
@@ -45,17 +39,10 @@ $(document).ready(function () {
     $("#check-out").datepicker("show");
   });
 
-  // $("#check-out").change(function () {
-  //   $("#check-out-button").html($("#check-out").val());
-  // });
-  // $("#home-header").style("color", "red !important");
-
   parallaxScroll = () => {
     let offset = window.pageYOffset;
     try {
       console.log("HELLO");
-      // $("#home-header").style("border", "1px solid red");
-      // = offset * 0.9 + "px";
     } catch (e) {
       console.error(e);
     }

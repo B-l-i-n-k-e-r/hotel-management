@@ -61,16 +61,16 @@ include(__DIR__ . "/includes/header.php");
         </div>
 
         <div class="team-grid">
-          <!-- Alan -->
+          <!-- Vince -->
           <article class="team-card">
             <div class="team-photo">
-              <img src="./media/images/aboutus/alan.jpg" alt="Alan D'silva" loading="lazy" />
+              <img src="./media/images/aboutus/mariba.jpg" alt="Mariba Vince" loading="lazy" />
             </div>
             <div class="team-body">
-              <h3>Alan D'silva</h3>
+              <h3>Mariba Vince</h3>
               <p class="team-role">General Manager</p>
               <p class="team-bio">
-                Alan oversees daily operations with a passion for luxury hospitality. He ensures room standards,
+                Vince oversees daily operations with a passion for luxury hospitality. He ensures room standards,
                 guest accommodations, and front-desk workflows align to deliver a world-class experience.
               </p>
               <div class="team-socials">
@@ -87,16 +87,16 @@ include(__DIR__ . "/includes/header.php");
             </div>
           </article>
 
-          <!-- Aaron -->
+          <!-- B_linker09 -->
           <article class="team-card">
             <div class="team-photo">
-              <img src="./media/images/aboutus/aaron1.jpg" alt="Aaron D'silva" loading="lazy" />
+              <img src="./media/images/aboutus/babu.jpg" alt="Aaron D'silva" loading="lazy" />
             </div>
             <div class="team-body">
-              <h3>Aaron D'silva</h3>
+              <h3>B_linker09</h3>
               <p class="team-role">Head of Guest Experiences</p>
               <p class="team-bio">
-                Aaron leads our hospitality programs — curating memorable journeys for every visitor, from elite
+                B_linker09 leads our hospitality programs — curating memorable journeys for every visitor, from elite
                 amenities to fine dining, translating expectations into unforgettable stays.
               </p>
               <div class="team-socials">
@@ -113,16 +113,16 @@ include(__DIR__ . "/includes/header.php");
             </div>
           </article>
 
-          <!-- Ansel -->
+          <!-- Nancy -->
           <article class="team-card">
             <div class="team-photo">
-              <img src="./media/images/aboutus/ansel.jpg" alt="Ansel D'souza" loading="lazy" />
+              <img src="./media/images/aboutus/nancy.jpg" alt="Ansel D'souza" loading="lazy" />
             </div>
             <div class="team-body">
-              <h3>Ansel D'souza</h3>
+              <h3>Nancy Kilonzo</h3>
               <p class="team-role">Technical Director</p>
               <p class="team-bio">
-                Ansel manages our digital ecosystem — reservation pipelines, portal security, and marketing analytics —
+                Nancy manages our digital ecosystem — reservation pipelines, portal security, and marketing analytics —
                 keeping every guest transaction safe, stable, and seamless.
               </p>
               <div class="team-socials">

@@ -33,7 +33,7 @@ include(__DIR__ . "/includes/header.php");
                   name="user_phone"
                   id="user_phone"
                   class="form-control"
-                  placeholder="Enter your 10 digit phone number"
+                  placeholder="Enter your phone number"
                   inputmode="tel"
                   autocomplete="tel"
                 />

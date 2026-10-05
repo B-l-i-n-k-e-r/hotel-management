@@ -6,8 +6,13 @@
         <h5>V&amp;N Resorts</h5>
         <ul class="list-unstyled">
           <li><a href="<?= SROOT ?>/aboutus.php">About us</a></li>
-          <li><a href="#!">Developers</a></li>
-        </ul>
+         <li>
+  <a href="https://b-l-i-n-k-e-r.github.io/Portfolio/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Developers
+  </a>
+</li>        </ul>
       </div>
 
       <div class="col-md-4 mb-md-0 mb-3">
@@ -21,9 +26,9 @@
 
       <div class="col-md-4 mb-md-0 mb-3">
         <h5>Get in touch</h5>
-        <ul class="list-unstyled">
-          <li><a href="#!">Toll Free no.</a></li>
-        </ul>
+<ul class="list-unstyled">
+  <li><a href="<?= SROOT ?>/contact.php">Customer Care</a></li>
+</ul>
       </div>
     </div>
   </div>
