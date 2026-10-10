@@ -9,9 +9,14 @@ if (!isLoggedIn()) {
 
 if (isset($_GET["check_in_date"])) {
     $check_in_date  = $_GET["check_in_date"];
-    $check_out_date = $_GET["check_out_date"];
-    $no_children    = $_GET["children"];
-    $no_adults      = $_GET["adults"];
+    $check_out_date = $_GET["check_out_date"] ?? "";
+    $no_children    = (int)($_GET["children"] ?? 0);
+    $no_adults      = (int)($_GET["adults"]   ?? 1);
+} else {
+    $check_in_date  = "";
+    $check_out_date = "";
+    $no_children    = 0;
+    $no_adults      = 1;
 }
 ?>
 <?php include(__DIR__ . "/includes/header.php"); ?>
@@ -58,7 +63,7 @@ if (isset($_GET["check_in_date"])) {
                   type="text"
                   autocomplete="off"
                   required
-                  value="<?= isset($check_in_date) ? htmlspecialchars($check_in_date) : '' ?>"
+                  value="<?= htmlspecialchars($check_in_date) ?>"
                 />
               </div>
               <div class="form-group">
@@ -70,26 +75,23 @@ if (isset($_GET["check_in_date"])) {
                   type="text"
                   autocomplete="off"
                   required
-                  value="<?= isset($check_out_date) ? htmlspecialchars($check_out_date) : '' ?>"
+                  value="<?= htmlspecialchars($check_out_date) ?>"
                 />
               </div>
             </div>
 
             <div class="form-group">
               <label class="form-label" for="room_id">Room</label>
-              <select class="form-control" name="room_id" id="room_id" required>
+              <select class="form-control room-select" name="room_id" id="room_id" required>
                 <option value="">Select a room</option>
                 <?php
-                  $sql = "SELECT * FROM rooms WHERE room_booked = 0";
-                  $stmt = $pdo->prepare($sql);
+                  $stmt = $pdo->prepare("SELECT room_id, room_name FROM rooms WHERE room_booked = 0 ORDER BY room_name ASC");
                   $stmt->execute();
                   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                  foreach ($rows as $row) {
+                  foreach ($rows as $row):
                 ?>
-                  <option value="<?= (int)$row["room_id"]; ?>">
-                    <?= htmlspecialchars($row["room_name"]) ?>
-                  </option>
-                <?php } ?>
+                  <option value="<?= (int)$row["room_id"]; ?>"><?= htmlspecialchars($row["room_name"]); ?></option>
+                <?php endforeach; ?>
               </select>
             </div>
 
@@ -102,7 +104,7 @@ if (isset($_GET["check_in_date"])) {
                   class="form-control"
                   name="no_adults"
                   id="no_adults"
-                  value="<?= isset($no_adults) ? (int)$no_adults : 1 ?>"
+                  value="<?= (int)$no_adults ?>"
                 />
               </div>
               <div class="form-group">
@@ -113,7 +115,7 @@ if (isset($_GET["check_in_date"])) {
                   class="form-control"
                   name="no_children"
                   id="no_children"
-                  value="<?= isset($no_children) ? (int)$no_children : 0 ?>"
+                  value="<?= (int)$no_children ?>"
                 />
               </div>
             </div>
@@ -129,47 +131,91 @@ if (isset($_GET["check_in_date"])) {
     </section>
   </main>
 
+  <style>
+    /* Ensure the room select is tall enough to show text without clipping */
+    select.room-select {
+      display: block;
+      width: 100%;
+      height: auto !important;
+      min-height: 48px;
+      padding: 12px 14px;
+      line-height: 1.4;
+      font-size: 15px;
+      background-color: #fff;
+    }
+    select.room-select option {
+      padding: 8px;
+    }
+  </style>
+
   <?php include(__DIR__ . "/includes/footer.php"); ?>
 
   <script>
-    $("#check_in_date").datepicker({
-      dateFormat: "yy-mm-dd",
-      minDate: 0,
-      numberOfMonths: [1, 2],
-      onSelect: function (data) {
-        $("#check_out_date").datepicker("option", "minDate", data);
-        updateAside();
-      }
-    });
-
-    $("#check_out_date").datepicker({
-      dateFormat: "yy-mm-dd",
-      minDate: 1,
-      numberOfMonths: [1, 2],
-      onSelect: function () {
-        updateAside();
-      }
-    });
-
-    function updateAside() {
-      var inDate  = $("#check_in_date").val()  || "—";
-      var outDate = $("#check_out_date").val() || "—";
-      var adults  = $("#no_adults").val()   || 0;
-      var children= $("#no_children").val() || 0;
-      var total   = parseInt(adults) + parseInt(children);
-
-      $("#aside-check-in").text(inDate);
-      $("#aside-check-out").text(outDate);
-      $("#aside-guests").text(total + (total === 1 ? " guest" : " guests"));
-    }
-
     $(document).ready(function () {
+      // ---- Date pickers ----
+      $("#check_in_date").datepicker({
+        dateFormat: "yy-mm-dd",
+        minDate: 0,
+        numberOfMonths: [1, 2],
+        onSelect: function (data) {
+          $("#check_out_date").datepicker("option", "minDate", data);
+          updateAside();
+        }
+      });
+
+      $("#check_out_date").datepicker({
+        dateFormat: "yy-mm-dd",
+        minDate: 1,
+        numberOfMonths: [1, 2],
+        onSelect: function () {
+          updateAside();
+        }
+      });
+
+      function updateAside() {
+        var inDate   = $("#check_in_date").val()  || "—";
+        var outDate  = $("#check_out_date").val() || "—";
+        var adults   = parseInt($("#no_adults").val()   || "0", 10);
+        var children = parseInt($("#no_children").val() || "0", 10);
+        var total    = adults + children;
+
+        $("#aside-check-in").text(inDate);
+        $("#aside-check-out").text(outDate);
+        $("#aside-guests").text(total + (total === 1 ? " guest" : " guests"));
+      }
+
       updateAside();
       $("#no_adults, #no_children").on("input", updateAside);
 
+      // ---- Submit with client-side guards ----
       $("#reservation_details").submit(function (e) {
         e.preventDefault();
         var $err = $("#reservation-error").attr("hidden", true).text("");
+
+        var checkIn  = ($("#check_in_date").val()  || "").trim();
+        var checkOut = ($("#check_out_date").val() || "").trim();
+        var roomId   = $("#room_id").val();
+        var adults   = parseInt($("#no_adults").val()   || "0", 10);
+        var children = parseInt($("#no_children").val() || "0", 10);
+
+        if (!checkIn || !checkOut) {
+          $err.text("Please select both check-in and check-out dates.").removeAttr("hidden");
+          return;
+        }
+        if (new Date(checkOut) <= new Date(checkIn)) {
+          $err.text("Check-out must be after check-in.").removeAttr("hidden");
+          return;
+        }
+        if (!roomId) {
+          $err.text("Please select a room.").removeAttr("hidden");
+          $("#room_id").focus();
+          return;
+        }
+        if (adults < 1) {
+          $err.text("At least one adult is required.").removeAttr("hidden");
+          return;
+        }
+
         var formData = new FormData(this);
         formData.append("action", "reservation");
 

@@ -41,29 +41,61 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !$error) {
 }
 ?>
 
-<main class="container section-pad">
-    <div class="form-container" style="max-width: 400px; margin: 0 auto;">
-        <h2>Set New Password</h2>
+<body class="has-nav has-hero">
+  <header class="page-header">
+    <?php include(__DIR__ . "/includes/navbar.php"); ?>
+    <div class="page-header-inner container">
+      <span class="eyebrow light">Account recovery</span>
+      <h1>Set New Password</h1>
+      <p>Choose a strong password you haven't used before.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="container section-pad">
+      <div class="survey-card" style="max-width: 480px; margin: 0 auto;">
 
         <?php if ($error): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+          <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?= $success ?></div>
-        <?php elseif (!$error): ?>
-            <form method="POST" action="?token=<?= htmlspecialchars($token) ?>">
-                <div class="form-group">
-                    <label for="password">New Password</label>
-                    <input type="password" name="password" id="password" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="confirm_password">Confirm New Password</label>
-                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
-                </div>
-                <button type="submit" class="search-btn" style="width:100%; margin-top:10px;">Update Password</button>
-            </form>
-        <?php endif; ?>
-    </div>
-</main>
 
-<?php include(__DIR__ . "/includes/footer.php"); ?>
+        <?php if ($success): ?>
+          <div class="alert alert-success"><?= $success ?></div>
+        <?php elseif (!$error): ?>
+          <form method="POST" action="?token=<?= htmlspecialchars($token) ?>" novalidate>
+
+            <div class="survey-question">
+              <label for="password">New Password</label>
+              <input type="password" name="password" id="password" class="form-control"
+                     placeholder="At least 6 characters" required>
+            </div>
+
+            <div class="survey-question">
+              <label for="confirm_password">Confirm New Password</label>
+              <input type="password" name="confirm_password" id="confirm_password" class="form-control"
+                     placeholder="Repeat your password" required>
+            </div>
+
+            <div class="survey-actions">
+              <button type="submit" class="btn-primary-pill" style="width:100%;">
+                Update Password
+              </button>
+            </div>
+
+            <div class="alternate-auth" style="margin-top:16px; text-align:center;">
+              <span>Remembered it? <a href="<?= SROOT ?>/login.php">Back to login</a></span>
+            </div>
+          </form>
+        <?php else: ?>
+          <div class="alternate-auth" style="text-align:center;">
+            <a href="<?= SROOT ?>/forgot_password.php">Request a new reset link</a>
+          </div>
+        <?php endif; ?>
+
+      </div>
+    </section>
+  </main>
+
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
+</body>
+</html>
