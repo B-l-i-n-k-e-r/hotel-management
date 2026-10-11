@@ -41,7 +41,7 @@ $nav_items = [
     <aside class="admin-sidebar">
 
       <div class="admin-brand">
-        <img src="<?= SROOT ?>/media/images/logo/aaa_logo.png" alt="V&N Hotel" class="admin-brand-logo" />
+        <img src="<?= SROOT ?>/media/images/logo/logo.jpeg" alt="V&N Hotel" class="admin-brand-logo" />
         <div class="admin-brand-text">
           <strong>V&amp;N</strong>
           <span>Hotel Admin</span>
