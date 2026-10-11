@@ -146,6 +146,27 @@ include(__DIR__ . "/includes/header.php");
       </div>
     </div>
   </section>
+  <style>
+  /* Force solid navbar on the signup page for contrast over the bright image */
+  #site-nav {
+    background: #ffffff !important;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.08);
+  }
+  #site-nav.site-nav--transparent {
+    background: #ffffff !important;
+  }
+  #site-nav .site-nav__link,
+  #site-nav .site-nav__account-btn,
+  #site-nav .site-nav__brand {
+    color: #0f172a !important;
+  }
+  #site-nav .site-nav__link.is-active {
+    color: #9a7b4f !important;
+  }
+  #site-nav .site-nav__toggle span {
+    background: #0f172a !important;
+  }
+</style>
 
   <?php include(__DIR__ . "/includes/footer.php"); ?>
 

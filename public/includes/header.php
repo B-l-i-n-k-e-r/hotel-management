@@ -34,4 +34,6 @@
 
     <!-- Custom css — MUST be last so it wins over Bootstrap -->
     <link rel="stylesheet" href="<?= SROOT ?>/css/main.css" />
+
+    <script src="https://js.paystack.co/v1/inline.js"></script>
   </head>

@@ -169,6 +169,46 @@ if (isset($_GET["email"], $_GET["hash"])) {
     .verify-card { padding: 30px 22px; }
     .verify-card h2 { font-size: 22px; }
   }
+  /* ===== Verify page – matches system UI ===== */
+#verify-user {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 100%),
+    url("./media/images/backgrounds/home-1.jpg") center/cover no-repeat;
+  padding: 140px 20px 80px;
+  position: relative;
+}
+
+#verify-user--bg-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+}
+
+/* Keep the navbar pinned to the top edge of the hero */
+#verify-user .site-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.verify-card {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  padding: 40px 36px;
+  text-align: center;
+  margin: 0 auto;
+}
 </style>
 
 <body class="has-nav has-hero">

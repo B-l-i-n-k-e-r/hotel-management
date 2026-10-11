@@ -74,13 +74,13 @@ include(__DIR__ . "/includes/header.php");
                 guest accommodations, and front-desk workflows align to deliver a world-class experience.
               </p>
               <div class="team-socials">
-                <a href="https://www.facebook.com/alan.dsilva.1253/" aria-label="Facebook" target="_blank" rel="noopener">
+                <a href="https://www.facebook.com/" aria-label="Facebook" target="_blank" rel="noopener">
                   <i class="fa fa-facebook-square"></i>
                 </a>
-                <a href="https://github.com/alandsilva26" aria-label="GitHub" target="_blank" rel="noopener">
+                <a href="https://github.com/" aria-label="GitHub" target="_blank" rel="noopener">
                   <i class="fa fa-github"></i>
                 </a>
-                <a href="https://www.linkedin.com/in/alan-dsilva-289b77170/" aria-label="LinkedIn" target="_blank" rel="noopener">
+                <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noopener">
                   <i class="fa fa-linkedin"></i>
                 </a>
               </div>
@@ -100,13 +100,13 @@ include(__DIR__ . "/includes/header.php");
                 amenities to fine dining, translating expectations into unforgettable stays.
               </p>
               <div class="team-socials">
-                <a href="https://facebook.com/dsilva.aaron.7" aria-label="Facebook" target="_blank" rel="noopener">
+                <a href="https://facebook.com/" aria-label="Facebook" target="_blank" rel="noopener">
                   <i class="fa fa-facebook-square"></i>
                 </a>
-                <a href="https://github.com/Aarondsilva0007" aria-label="GitHub" target="_blank" rel="noopener">
+                <a href="https://github.com/" aria-label="GitHub" target="_blank" rel="noopener">
                   <i class="fa fa-github"></i>
                 </a>
-                <a href="https://www.linkedin.com/in/aaron-d-silva-a05756200/" aria-label="LinkedIn" target="_blank" rel="noopener">
+                <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noopener">
                   <i class="fa fa-linkedin"></i>
                 </a>
               </div>
@@ -126,13 +126,13 @@ include(__DIR__ . "/includes/header.php");
                 keeping every guest transaction safe, stable, and seamless.
               </p>
               <div class="team-socials">
-                <a href="https://www.facebook.com/ansel.dsouza.71" aria-label="Facebook" target="_blank" rel="noopener">
+                <a href="https://www.facebook.com/" aria-label="Facebook" target="_blank" rel="noopener">
                   <i class="fa fa-facebook-square"></i>
                 </a>
-                <a href="https://github.com/ansel2000" aria-label="GitHub" target="_blank" rel="noopener">
+                <a href="https://github.com/" aria-label="GitHub" target="_blank" rel="noopener">
                   <i class="fa fa-github"></i>
                 </a>
-                <a href="https://www.linkedin.com/in/anselfdsouza/" aria-label="LinkedIn" target="_blank" rel="noopener">
+                <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noopener">
                   <i class="fa fa-linkedin"></i>
                 </a>
               </div>

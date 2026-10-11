@@ -25,8 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $stmt->execute([$email]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                // Always show the same message — don't reveal if email exists
-                $message = "If that email exists in our system, a password reset link has been sent.";
+                $message = "A password reset link has been sent to your email.";
                 $message_type = "success";
 
                 if ($user) {
@@ -63,31 +62,160 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 <?php include(__DIR__ . "/includes/header.php"); ?>
 
-<main class="auth-page-container">
-    <div class="auth-card">
-        <h2>Reset Password</h2>
-        <p class="auth-sub">Enter your registered email address and we'll send you a link to reset your password.</p>
+<style>
+  /* ===== Forgot password page ===== */
+  #forgot-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 100%),
+      url("./media/images/backgrounds/home-1.jpg") center/cover no-repeat;
+    padding: 140px 20px 80px;
+    position: relative;
+  }
 
-        <?php if ($message): ?>
-            <div class="alert alert-<?= $message_type ?>"><?= htmlspecialchars($message) ?></div>
-        <?php endif; ?>
+  #forgot-wrap .site-nav {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+  }
 
-        <form method="POST" action="">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+  .forgot-card {
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    padding: 40px 36px;
+    text-align: center;
+    margin: 0 auto;
+  }
 
-            <div class="form-group">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" name="email" id="email" class="form-control"
-                       placeholder="you@example.com" autocomplete="email" required>
-            </div>
+  .forgot-card .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #9a7b4f;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
 
-            <button type="submit" class="btn-primary-pill">Send Reset Link</button>
-        </form>
+  .forgot-card h2 {
+    font-size: 26px;
+    line-height: 1.25;
+    margin: 0 0 10px;
+    color: #1c1c1c;
+    font-weight: 700;
+  }
 
-        <a href="login.php" class="auth-back-link">
-            <i class="fa fa-arrow-left"></i> Back to Login
-        </a>
+  .forgot-card .sub {
+    color: #5b5b5b;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 24px;
+  }
+
+  .forgot-card .form-group {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .forgot-card label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .forgot-card input.form-control {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #0f172a;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .forgot-card input.form-control:focus {
+    border-color: #9a7b4f;
+  }
+
+  .forgot-card .btn-primary-pill {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .forgot-card .auth-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    color: #64748b;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .forgot-card .auth-back-link:hover { color: #0f172a; }
+
+  .forgot-card .alert {
+    text-align: left;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .forgot-card .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+  .forgot-card .alert-danger  { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+  @media (max-width: 480px) {
+    .forgot-card { padding: 30px 22px; }
+    .forgot-card h2 { font-size: 22px; }
+  }
+</style>
+
+<body class="has-nav has-hero">
+  <header id="forgot-wrap">
+    <?php include(__DIR__ . "/includes/navbar.php"); ?>
+
+    <div class="forgot-card">
+      <span class="eyebrow">Account recovery</span>
+      <h2>Reset Password</h2>
+      <p class="sub">Enter your registered email address and we'll send you a link to reset your password.</p>
+
+      <?php if ($message): ?>
+        <div class="alert alert-<?= $message_type ?>"><?= htmlspecialchars($message) ?></div>
+      <?php endif; ?>
+
+      <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" name="email" id="email" class="form-control"
+                 placeholder="you@example.com" autocomplete="email" required>
+        </div>
+
+        <button type="submit" class="btn-primary-pill">Send Reset Link</button>
+      </form>
+
+      <a href="login.php" class="auth-back-link">
+        <i class="fa fa-arrow-left"></i> Back to Login
+      </a>
     </div>
-</main>
+  </header>
 
-<?php include(__DIR__ . "/includes/footer.php"); ?>
+  <main></main>
+
+  <?php include(__DIR__ . "/includes/footer.php"); ?>
+</body>
+</html>

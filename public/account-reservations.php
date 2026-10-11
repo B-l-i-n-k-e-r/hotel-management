@@ -9,6 +9,7 @@ if (!isLoggedIn()) {
 
 $sql = "SELECT
           reservations.reservation_id,
+          reservations.status,
           room.check_in_date,
           room.check_out_date,
           room.room_name,
@@ -80,45 +81,50 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
               <div class="reservations-table-wrap">
                 <table class="reservations-table">
                   <thead>
-                    <tr>
-                      <th>Room</th>
-                      <th>Check in</th>
-                      <th>Check out</th>
-                      <th class="num">Amount</th>
-                      <th class="actions">Invoice</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($rows as $row): ?>
-                      <tr>
-                        <td data-label="Room">
-                          <strong><?= htmlspecialchars($row["room_name"] ?? "—") ?></strong>
-                        </td>
-                        <td data-label="Check in">
-                          <?= htmlspecialchars($row["check_in_date"] ?? "—") ?>
-                        </td>
-                        <td data-label="Check out">
-                          <?= htmlspecialchars($row["check_out_date"] ?? "—") ?>
-                        </td>
-                        <td data-label="Amount" class="num">
-                          <?php if ($row["amount"] !== null): ?>
-                            <strong>Ksh <?= number_format((float)$row["amount"], 2) ?></strong>
-                          <?php else: ?>
-                            <span class="muted">Unpaid</span>
-                          <?php endif; ?>
-                        </td>
-                        <td class="actions">
-                          <?php if (!empty($row["payment_id"])): ?>
-                            <a href="<?= SROOT ?>/bill_view.php?reservation_id=<?= (int)$row["reservation_id"] ?>" class="row-action">
-                              View
-                            </a>
-                          <?php else: ?>
-                            <span class="muted">—</span>
-                          <?php endif; ?>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
+  <tr>
+    <th>Room</th>
+    <th>Check in</th>
+    <th>Check out</th>
+    <th>Status</th>
+    <th class="num">Amount</th>
+    <th class="actions">Invoice</th>
+  </tr>
+</thead>
+<tbody>
+  <?php
+    $status_labels = [
+      "pending"     => ["Pending",     "pill-neutral"],
+      "confirmed"   => ["Confirmed",   "pill-success"],
+      "checked_in"  => ["Checked in",  "pill-success"],
+      "checked_out" => ["Checked out", "pill-muted"],
+      "cancelled"   => ["Cancelled",   "pill-danger-soft"],
+    ];
+    foreach ($rows as $row):
+      $st = $row["status"] ?? "pending";
+      [$label, $cls] = $status_labels[$st] ?? ["Pending", "pill-neutral"];
+  ?>
+    <tr>
+      <td data-label="Room"><strong><?= htmlspecialchars($row["room_name"] ?? "—") ?></strong></td>
+      <td data-label="Check in"><?= htmlspecialchars($row["check_in_date"] ?? "—") ?></td>
+      <td data-label="Check out"><?= htmlspecialchars($row["check_out_date"] ?? "—") ?></td>
+      <td data-label="Status"><span class="pill <?= $cls ?>"><?= htmlspecialchars($label) ?></span></td>
+      <td data-label="Amount" class="num">
+        <?php if ($row["amount"] !== null): ?>
+          <strong>Ksh <?= number_format((float)$row["amount"], 2) ?></strong>
+        <?php else: ?>
+          <span class="muted">Unpaid</span>
+        <?php endif; ?>
+      </td>
+      <td class="actions">
+        <?php if (!empty($row["payment_id"])): ?>
+          <a href="<?= SROOT ?>/bill_view.php?reservation_id=<?= (int)$row["reservation_id"] ?>" class="row-action">View</a>
+        <?php else: ?>
+          <span class="muted">—</span>
+        <?php endif; ?>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+</tbody>
                 </table>
               </div>
             </div>

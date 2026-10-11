@@ -124,22 +124,30 @@ $amount_display = "Ksh " . number_format($room_amount);
               </form>
             </div>
 
-            <!-- CARD (Paystack hosted checkout) -->
-            <div class="payment-panel" data-method="card" hidden>
-              <p class="payment-help">
-                You'll be redirected to Paystack's secure checkout page to enter your card details.
-                After payment you'll return here automatically.
-                You are paying <strong><?= $amount_display ?></strong>.
-              </p>
-              <form id="card_form" novalidate>
-                <div class="form-actions">
-                  <button type="submit" class="btn-primary-pill" id="card-btn">
-                    Pay <?= $amount_display ?> with Card
-                  </button>
-                  <p class="secure-note"><i class="fa fa-lock"></i> Secured by Paystack</p>
-                </div>
-              </form>
-            </div>
+          <!-- CARD (Paystack Popup) -->
+<div class="payment-panel" data-method="card" hidden>
+  <p class="payment-help">
+    Enter your card details below. Payments are processed securely by Paystack —
+    your card info never touches our servers.
+    You are paying <strong><?= $amount_display ?></strong>.
+  </p>
+
+  <form id="card_form" novalidate>
+    <div class="form-group">
+      <label class="form-label" for="card_email">Email (for receipt)</label>
+      <input type="email" name="card_email" id="card_email" class="form-control"
+             value="<?= htmlspecialchars($_SESSION["user_email"] ?? "") ?>"
+             autocomplete="email" required>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary-pill" id="card-btn">
+        Pay <?= $amount_display ?> with Card
+      </button>
+      <p class="secure-note"><i class="fa fa-lock"></i> Secured by Paystack</p>
+    </div>
+  </form>
+</div>
 
             <!-- CASH -->
             <div class="payment-panel" data-method="cash" hidden>
@@ -262,33 +270,70 @@ $amount_display = "Ksh " . number_format($room_amount);
           }
         });
       });
+      
+// ---------- CARD via Paystack Popup ----------
+$("#card_form").submit(function (e) {
+  e.preventDefault();
+  clearError();
 
-      // ---------- CARD via Paystack hosted checkout ----------
-      $("#card_form").submit(function (e) {
-        e.preventDefault();
-        clearError();
-        var $btn = $("#card-btn").prop("disabled", true).text("Redirecting to Paystack…");
+  var email = $("#card_email").val().trim();
+  if (!email) {
+    showError("Please enter your email.");
+    return;
+  }
 
-        $.ajax({
-          url: "core/paystack_initiate.php",
-          type: "POST",
-          dataType: "json",
-          success: function (data) {
-            if (data.error == 1) {
-              showError(data.message);
+  var $btn = $("#card-btn").prop("disabled", true).text("Opening Paystack…");
+
+  // 1. Ask our backend to create the pending reservation + reference
+  $.ajax({
+    url: "core/paystack_initiate.php",
+    type: "POST",
+    data: { email: email },
+    dataType: "json",
+    success: function (data) {
+      if (data.error == 1) {
+        showError(data.message);
+        $btn.prop("disabled", false).text("Pay <?= $amount_display ?> with Card");
+        return;
+      }
+
+      // 2. Open Paystack popup using the reference + amount we just created
+      var handler = PaystackPop.setup({
+        key:       "<?= PAYSTACK_PUBLIC_KEY ?>",
+        email:     email,
+        amount:    data.amount_kobo,     // in kobo
+        currency:  "KES",
+        ref:       data.reference,
+        metadata: {
+          reservation_id: data.reservation_id,
+          payment_id:     data.payment_id
+        },
+        callback: function (response) {
+          // Paystack gives us back the reference — verify it server-side
+          $btn.text("Verifying payment…");
+          $.get("core/paystack_verify.php", { reference: response.reference }, function (res) {
+            if (res.error == 0 && res.status === "paid") {
+              showSuccess(res.reservation_id);
+            } else {
+              showError(res.message || "Payment could not be verified. Please contact support.");
               $btn.prop("disabled", false).text("Pay <?= $amount_display ?> with Card");
-              return;
             }
-            // Redirect browser to Paystack's checkout
-            window.location.href = data.authorization_url;
-          },
-          error: function (xhr, status, err) {
-            showError("Network error: " + err);
-            $btn.prop("disabled", false).text("Pay <?= $amount_display ?> with Card");
-          }
-        });
+          });
+        },
+        onClose: function () {
+          showError("Payment window closed. You can try again.");
+          $btn.prop("disabled", false).text("Pay <?= $amount_display ?> with Card");
+        }
       });
 
+      handler.openIframe();
+    },
+    error: function (xhr, status, err) {
+      showError("Network error: " + err);
+      $btn.prop("disabled", false).text("Pay <?= $amount_display ?> with Card");
+    }
+  });
+});
       // ---------- CASH ----------
       $("#cash_form").submit(function (e) {
         e.preventDefault();

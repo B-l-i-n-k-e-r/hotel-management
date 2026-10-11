@@ -106,6 +106,7 @@ if (!isLoggedIn() || !isAdmin($pdo)) {
                   <a href="core/toggle_admin.php?user_id=<?= (int)$row["user_id"] ?>" class="icon-btn icon-btn-edit" title="Make admin" aria-label="Make admin" onclick="return confirm('Make this user an admin?');"><i class="fa fa-shield"></i></a>
                 <?php endif; ?>
                 <a href="core/delete_user.php?user_id=<?= (int)$row["user_id"] ?>" class="icon-btn icon-btn-delete" title="Delete user" aria-label="Delete user" onclick="return confirm('Delete this user? This cannot be undone.');"><i class="fa fa-trash"></i></a>
+             <a href="edit_user.php?user_id=<?= (int)$row["user_id"] ?>" class="icon-btn icon-btn-edit" title="Edit user" aria-label="Edit user"><i class="fa fa-pencil"></i></a>
               </td>
             </tr>
           <?php endforeach; ?>

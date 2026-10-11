@@ -42,6 +42,7 @@ define("MAIL_ADMIN",     getenv("MAIL_ADMIN"));
 // Paystack
 define("PAYSTACK_SECRET_KEY", getenv("PAYSTACK_SECRET_KEY"));
 define("PAYSTACK_PUBLIC_KEY", getenv("PAYSTACK_PUBLIC_KEY"));
+define("PAYSTACK_CALLBACK_URL", getenv("PAYSTACK_CALLBACK_URL"));
 
 // M-Pesa (Daraja)
 define("MPESA_ENV",           getenv("MPESA_ENV") ?: "sandbox");
