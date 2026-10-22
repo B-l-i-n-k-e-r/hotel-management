@@ -1,150 +1,316 @@
--- MariaDB dump 10.17  Distrib 10.4.14-MariaDB, for Win64 (AMD64)
+-- phpMyAdmin SQL Dump
+-- version 5.2.3deb1
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: hotel
--- ------------------------------------------------------
--- Server version	10.4.14-MariaDB
+-- Host: localhost:3306
+-- Generation Time: Oct 22, 2026 at 11:00 AM
+-- Server version: 8.4.11-0ubuntu0.26.04.1
+-- PHP Version: 8.5.4
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Database: `database`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact_messages`
+--
+
+CREATE TABLE `contact_messages` (
+  `message_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `subject` varchar(150) NOT NULL,
+  `message` text NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'unread',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `contact_messages`
+--
+
+INSERT INTO `contact_messages` (`message_id`, `user_id`, `name`, `email`, `phone`, `subject`, `message`, `status`, `created_at`) VALUES
+(1, NULL, 'Mariba Vincent', 'vinniemariba2004@gmail.com', '0712345678', 'None of your B/S', 'Here we go!!', 'unread', '2026-10-05 15:05:45');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `feedback_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `impression` text,
+  `first_hear` text,
+  `missing_features` text,
+  `recommend` tinyint DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'unread',
+  `useful_features` text,
+  `ease_of_use` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`feedback_id`, `user_id`, `impression`, `first_hear`, `missing_features`, `recommend`, `status`, `useful_features`, `ease_of_use`, `created_at`) VALUES
+(1, 3, 'I  made this shit brick by brick.', 'My mind', 'Yeah but still working on it', 5, 'read', 'Everything', 'Very easy', '2026-09-27 15:28:41');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment`
+--
+
+CREATE TABLE `payment` (
+  `payment_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reservation_id` int NOT NULL,
+  `currency` varchar(5) DEFAULT 'KES',
+  `method` varchar(20) DEFAULT 'card',
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `payment_ref` varchar(100) DEFAULT NULL,
+  `payment_meta` text,
+  `amount` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `reservations`
 --
 
-
-DROP TABLE IF EXISTS `reservations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `reservations` (
-  `reservation_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `room_id` int(11) DEFAULT NULL,
+  `reservation_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `room_id` int DEFAULT NULL,
   `booking_date` date DEFAULT NULL,
-  `no_adults` int(11) DEFAULT NULL,
-  `no_children` int(11) DEFAULT NULL,
-  `reservation_created` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`reservation_id`),
-  KEY `user_id` (`user_id`),
-  KEY `room_id` (`room_id`),
-  CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `check_in_date` date DEFAULT NULL,
+  `check_out_date` date DEFAULT NULL,
+  `no_adults` int DEFAULT NULL,
+  `no_children` int DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `reservation_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
---
--- Dumping data for table `reservations`
---
-
-LOCK TABLES `reservations` WRITE;
-/*!40000 ALTER TABLE `reservations` DISABLE KEYS */;
-/*!40000 ALTER TABLE `reservations` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `rooms`
 --
 
-DROP TABLE IF EXISTS `rooms`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rooms` (
-  `room_id` int(11) NOT NULL AUTO_INCREMENT,
-  `room_number` int(11) NOT NULL,
+  `room_id` int NOT NULL,
+  `room_number` int NOT NULL,
   `room_name` varchar(30) NOT NULL,
   `room_type` varchar(30) NOT NULL,
-  `room_featured` int(1) NOT NULL,
+  `room_featured` int NOT NULL,
   `room_price` double(10,3) NOT NULL,
-  `room_booked` int(1) DEFAULT 0,
+  `room_booked` int DEFAULT '0',
   `check_in_date` date DEFAULT NULL,
   `check_out_date` date DEFAULT NULL,
   `room_image` varchar(50) NOT NULL,
-  `room_floor` int(11) NOT NULL,
+  `room_floor` int NOT NULL,
   `room_view` varchar(20) NOT NULL,
-  `room_beds` int(11) NOT NULL,
+  `room_beds` int NOT NULL,
   `bed_type` varchar(30) NOT NULL,
-  `room_capacity` int(11) NOT NULL,
-  `room_amenities` varchar(200) NOT NULL,
-  PRIMARY KEY (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `room_capacity` int NOT NULL,
+  `room_amenities` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `rooms`
 --
 
-LOCK TABLES `rooms` WRITE;
-/*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
-INSERT INTO `rooms` VALUES (1,101,'Daimond Suite','Daimond',1,538.220,0,NULL,NULL,'3.jpg',2,'Beach',2,'Double deluxe',4,'breakfast, lunch, dinner, wifi'),(2,101,'Daimond Suite','Silver',1,538.220,0,NULL,NULL,'4.jpg',5,'Beach',2,'Double deluxe',4,'breakfast, lunch, dinner, wifi'),(3,202,'Ocean View Suite','gold',0,788.000,0,NULL,NULL,'4.jpg',2,'Ocean',3,'Queen Bed',2,'Ocean View, Wifi, Double bathroom'),(4,303,'Premiun','Premium',1,674.000,0,NULL,NULL,'6.jpg',3,'Ocean',2,'Queen Bed',3,'Ocean View, Wifi, Double bathroom, hairdryer'),(5,202,'Ocean View Suite','gold',0,788.000,0,NULL,NULL,'5.jpg',2,'Ocean',3,'Queen Bed',7,'Ocean View, Wifi, Double bathroom'),(6,202,'Ocean View Suite','Silver',1,788.000,0,NULL,NULL,'1.jpg',2,'Ocean',3,'Queen Bed',7,'Ocean View, Wifi, Double bathroom'),(7,202,'Ocean View Suite','Gold',1,788.000,0,NULL,NULL,'7.jpg',2,'Ocean',3,'Queen Bed',7,'Ocean View, Wifi, Double bathroom'),(8,202,'Ocean View Suite','Premium',1,788.000,0,NULL,NULL,'1.jpg',2,'Ocean',3,'Queen Bed',7,'Ocean View, Wifi, Double bathroom');
-/*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `rooms` (`room_id`, `room_number`, `room_name`, `room_type`, `room_featured`, `room_price`, `room_booked`, `check_in_date`, `check_out_date`, `room_image`, `room_floor`, `room_view`, `room_beds`, `bed_type`, `room_capacity`, `room_amenities`) VALUES
+(32, 101, 'Standard Single', 'Standard', 0, 2500.000, 0, NULL, NULL, 'room_0199fff562c0a4c7.jpg', 1, 'Garden View', 1, 'Single', 1, 'Wi-Fi, TV, Shower'),
+(33, 102, 'Standard Double', 'Standard', 0, 3500.000, 0, NULL, NULL, 'room_2d3a39215e3f2977.jpg', 1, 'Garden View', 1, 'Double', 2, 'Wi-Fi, TV, AC, Shower'),
+(34, 103, 'Twin Comfort', 'Standard', 0, 4000.000, 0, NULL, NULL, 'room_9d7b6f3ca33ac380.jpg', 1, 'Courtyard View', 2, 'Single', 2, 'Wi-Fi, TV, Desk'),
+(35, 104, 'Deluxe Queen', 'Deluxe', 1, 5500.000, 0, NULL, NULL, 'room_3bec43829ac63c08.jpg', 1, 'Pool View', 1, 'Queen', 2, 'Wi-Fi, TV, AC, Mini Fridge'),
+(36, 201, 'Deluxe King', 'Deluxe', 1, 6500.000, 0, NULL, NULL, 'room_6d3af7e2463a03b7.jpg', 2, 'City View', 1, 'King', 2, 'Wi-Fi, TV, AC, Balcony'),
+(37, 202, 'Executive Suite', 'Suite', 1, 9000.000, 0, NULL, NULL, 'room_538073d7aea4a4e2.jpg', 2, 'City View', 1, 'King', 2, 'Wi-Fi, TV, AC, Sofa, Mini Fridge'),
+(38, 203, 'Family Room', 'Family', 1, 7500.000, 0, NULL, NULL, 'room_854615a50b0e3f2f.jpg', 2, 'Garden View', 3, 'Double + Single', 3, 'Wi-Fi, TV, AC, Wardrobe'),
+(39, 204, 'Honeymoon Suite', 'Suite', 1, 12022.000, 0, NULL, NULL, 'room_57ec8bbfe31741d6.jpg', 2, 'Pool View', 1, 'King', 2, 'Wi-Fi, TV, AC, Bathtub, Balcony'),
+(40, 301, 'Presidential Suite', 'Suite', 1, 20000.000, 0, NULL, NULL, 'room_efe300057e0cef65.jpg', 3, 'Panoramic City View', 2, 'King', 4, 'Wi-Fi, Smart TV, AC, Jacuzzi, Lounge'),
+(41, 302, 'Family Deluxe', 'Family', 1, 10000.000, 0, NULL, NULL, 'room_fda8e207dec205d5.jpg', 3, 'Mountain View', 2, 'Queen', 4, 'Wi-Fi, TV, AC, Mini Fridge, Desk'),
+(42, 303, 'Standard Queen', 'Standard', 0, 4500.000, 0, NULL, NULL, 'room_79c693e2041b7069.jpg', 3, 'Garden View', 1, 'Queen', 2, 'Wi-Fi, TV, Shower'),
+(43, 304, 'Premium King', 'Premium', 0, 7000.000, 0, NULL, NULL, 'room_bcc6537af5b7838b.jpg', 3, 'City View', 1, 'King', 2, 'Wi-Fi, Smart TV, AC, Mini Fridge'),
+(44, 305, 'Deluxe Twin', 'Deluxe', 0, 6000.000, 0, NULL, NULL, 'room_231ac44d22295ac1.jpg', 3, 'Mountain View', 2, 'Single', 2, 'Wi-Fi, TV, AC, Desk'),
+(45, 306, 'Business Suite', 'Suite', 0, 10000.000, 0, NULL, NULL, 'room_d07a03e80253b1bb.jpg', 3, 'City View', 1, 'King', 2, 'Wi-Fi, Smart TV, AC, Work Desk, Sofa'),
+(46, 307, 'Family Comfort', 'Family', 0, 8500.000, 0, NULL, NULL, 'room_06db73d6c9b2c84c.jpg', 3, 'Garden View', 3, 'Double + Single', 4, 'Wi-Fi, TV, AC, Wardrobe'),
+(47, 308, 'Luxury Suite', 'Suite', 0, 14000.000, 0, NULL, NULL, 'room_6d47525d5942f1f8.jpg', 3, 'Pool View', 1, 'King', 2, 'Wi-Fi, Smart TV, AC, Bathtub, Balcony'),
+(48, 309, 'Economy Single', 'Economy', 0, 2000.000, 0, NULL, NULL, 'room_f5cf5266f3198754.jpg', 3, 'Courtyard View', 1, 'Single', 1, 'Wi-Fi, TV, Shower, Desk'),
+(49, 310, 'Superior Double', 'Superior', 1, 5000.000, 0, NULL, NULL, 'room_1c376c7b2a1497de.jpg', 3, 'City View', 1, 'Double', 2, 'Wi-Fi, TV, AC, Mini Fridge'),
+(50, 311, 'Accessible Room', 'Standard', 0, 5000.000, 0, NULL, NULL, 'room_8c6f9ea0d772efff.jpg', 3, 'Garden View', 1, 'Queen', 2, 'Wi-Fi, TV, Accessible Bathroom, Grab Rails'),
+(51, 312, 'Royal Suite', 'Suite', 0, 18000.000, 0, NULL, NULL, 'room_dd0509e9a33a9fbb.jpg', 3, 'Panoramic View', 2, 'King', 4, 'Wi-Fi, Smart TV, AC, Lounge, Jacuzzi'),
+(52, 313, 'Triple Comfort', 'Family', 0, 7000.000, 0, NULL, NULL, 'room_64a9fe639c872943.jpg', 3, 'Mountain', 3, 'Single', 3, 'Wi-Fi, TV, AC, Wardrobe, Desk'),
+(53, 314, 'Premium Family Suite', 'Suite', 1, 15000.000, 0, NULL, NULL, 'room_5371b576f7f7050e.jpg', 3, 'Pool View', 2, 'Queen', 4, 'Wi-Fi, Smart TV, AC, Sofa, Mini Fridge, Balcony');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `user_email` varchar(50) NOT NULL,
   `user_fname` varchar(20) NOT NULL,
   `user_lname` varchar(20) NOT NULL,
-  `user_verified` int(1) NOT NULL DEFAULT 0,
-  `verification_hash` varchar(500) NOT NULL,
+  `user_verified` int NOT NULL DEFAULT '0',
+  `verification_hash` varchar(500) DEFAULT NULL,
   `user_dob` date NOT NULL,
   `user_phone` varchar(15) NOT NULL,
-  `user_admin` int(1) NOT NULL DEFAULT 0,
+  `user_admin` int NOT NULL DEFAULT '0',
   `user_password` varchar(500) NOT NULL,
-  `user_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `user_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_image` varchar(20) NOT NULL DEFAULT 'default_user.jpg',
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `reset_token` varchar(64) DEFAULT NULL,
+  `reset_expires` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (3,'admin@gmail.com','Admin ','Account',1,'5a4b25aaed25c2ee1b74de72dc03c14e','2000-07-19','0213123118024',1,'8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','2020-11-22 17:52:46','default_user.jpg'),(6,'alandsilva@gmail.com','Alan','Dsilva',1,'c3e878e27f52e2a57ace4d9a76fd9acf','2020-11-23','0213123118024',1,'db42328112177c2d6f2f6ca7f33c8e81084b8ff3e14202254137e22673bce2c8','2020-11-25 04:03:00','default_user.jpg');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+INSERT INTO `users` (`user_id`, `user_email`, `user_fname`, `user_lname`, `user_verified`, `verification_hash`, `user_dob`, `user_phone`, `user_admin`, `user_password`, `user_created`, `user_image`, `reset_token`, `reset_expires`) VALUES
+(3, 'admin@gmail.com', 'Admin ', 'Account', 1, '5a4b25aaed25c2ee1b74de72dc03c14e', '2000-07-19', '0213123118024', 1, '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', '2020-11-22 17:52:46', 'default_user.jpg', NULL, NULL),
+(13, 'nancy@gmail.com', 'Nancy', 'K', 1, '', '2004-09-24', '0705681215', 0, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '2026-10-11 12:13:17', 'default_user.jpg', NULL, NULL);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  ADD PRIMARY KEY (`message_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`feedback_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `payment`
+--
+ALTER TABLE `payment`
+  ADD PRIMARY KEY (`payment_id`),
+  ADD KEY `payment_idfk_1` (`reservation_id`),
+  ADD KEY `payment_idfk_2` (`user_id`);
+
+--
+-- Indexes for table `reservations`
+--
+ALTER TABLE `reservations`
+  ADD PRIMARY KEY (`reservation_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `room_id` (`room_id`);
+
+--
+-- Indexes for table `rooms`
+--
+ALTER TABLE `rooms`
+  ADD PRIMARY KEY (`room_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  MODIFY `message_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `feedback_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `payment`
+--
+ALTER TABLE `payment`
+  MODIFY `payment_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+
+--
+-- AUTO_INCREMENT for table `reservations`
+--
+ALTER TABLE `reservations`
+  MODIFY `reservation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- AUTO_INCREMENT for table `rooms`
+--
+ALTER TABLE `rooms`
+  MODIFY `room_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  ADD CONSTRAINT `contact_messages_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `payment`
+--
+ALTER TABLE `payment`
+  ADD CONSTRAINT `payment_idfk_1` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`reservation_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `payment_idfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reservations`
+--
+ALTER TABLE `reservations`
+  ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2020-11-25 10:09:29
---
--- Table structure for table `payment`
---
-
-DROP TABLE IF EXISTS `payment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `payment`(
-  `payment_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `reservation_id` int(11) NOT NULL,
-  `currency` varchar(5) DEFAULT 'INR',
-  `method` varchar(10) DEFAULT 'card',
-  `amount` int(11), 
-  CONSTRAINT `payment_idfk_1` FOREIGN KEY(`reservation_id`) REFERENCES `reservations`(`reservation_id`) ON DELETE CASCADE,
-  CONSTRAINT `payment_idfk_2` FOREIGN KEY(`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE
-)
-
